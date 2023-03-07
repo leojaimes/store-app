@@ -18,7 +18,7 @@ export function Form() {
       <TextField label="name" id="name" name="name" />
       <TextField label="size" id="size" name="size" />
 
-      <FormControl fullWidth>
+      {/* <FormControl fullWidth>
         <InputLabel variant="standard" htmlFor="type">
           Type
         </InputLabel>
@@ -33,6 +33,21 @@ export function Form() {
           <option value="furniture">Furniture</option>
           <option value="clothing">Clothing</option>
         </NativeSelect>
+        </FormControl> */}
+
+      <FormControl>
+        <InputLabel id="type">type</InputLabel>
+        <Select
+          data-testid="type"
+          name="type"
+          labelId="type"
+          displayEmpty
+          value=""
+        >
+          <MenuItem value="electronic">Electronic</MenuItem>
+          <MenuItem value="furniture">Furniture</MenuItem>
+          <MenuItem value="clothing">Clothing</MenuItem>
+        </Select>
       </FormControl>
     </Container>
   );
