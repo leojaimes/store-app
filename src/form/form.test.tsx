@@ -7,6 +7,12 @@ describe('when the form is mounted ', () => {
     ///
     render(<Form />);
     screen.debug();
-    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'Create Product'
+    );
+  });
+  it('The form must have the following fields: name, size, type (electronic, furniture, clothing) and a submit button.', () => {
+    ///
+    ///
   });
 });
