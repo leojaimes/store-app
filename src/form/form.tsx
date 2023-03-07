@@ -6,7 +6,7 @@ export function Form() {
   return (
     <Container maxWidth="xs">
       <CssBaseline />
-      <Typography>Create Product </Typography>
+      <Typography component="h1">Create Product</Typography>
     </Container>
   );
 }

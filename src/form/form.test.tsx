@@ -6,5 +6,7 @@ describe('when the form is mounted ', () => {
   it('here must be a create product form page', () => {
     ///
     render(<Form />);
+    screen.debug();
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
   });
 });
