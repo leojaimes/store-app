@@ -12,7 +12,11 @@ describe('when the form is mounted ', () => {
     );
   });
   it('The form must have the following fields: name, size, type (electronic, furniture, clothing) and a submit button.', () => {
-    ///
-    ///
+    render(<Form />);
+    const nameTexField = screen.getByLabelText(/name/i);
+    expect(nameTexField).toBeInTheDocument();
+
+    const sizeTexField = screen.getByLabelText(/size/i);
+    expect(sizeTexField).toBeInTheDocument();
   });
 });
