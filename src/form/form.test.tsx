@@ -12,16 +12,15 @@ import userEvent from '@testing-library/user-event';
 import { Form } from './form';
 
 describe('when the form is mounted ', () => {
-  it('here must be a create product form page', () => {
-    ///
+  beforeEach(() => {
     render(<Form />);
-    // screen.debug();
+  });
+  it('here must be a create product form page', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Create Product'
     );
   });
-  it.only('The form must have the following fields: name, size, type (electronic, furniture, clothing) and a submit button.', async () => {
-    render(<Form />);
+  it('The form must have the following fields: name, size, type (electronic, furniture, clothing) and a submit button.', async () => {
     const nameTexField = screen.getByLabelText(/name/i);
     expect(nameTexField).toBeInTheDocument();
 
@@ -34,8 +33,11 @@ describe('when the form is mounted ', () => {
     // expect(screen.getByText(/electronic/i)).toBeInTheDocument();
     // expect(screen.getByText(/furniture/i)).toBeInTheDocument();
     // expect(screen.getByText(/clothing/i)).toBeInTheDocument();
+  });
 
+  it('should show electronic, furniture and clothing when dropdown will be shown ', () => {
     fireEvent.mouseDown(getByRole(screen.getByTestId('type'), 'button'));
+    screen.getByRole('listbox');
     expect(
       screen.getByRole('option', { name: /electronic/i })
     ).toBeInTheDocument();
@@ -45,15 +47,22 @@ describe('when the form is mounted ', () => {
     expect(
       screen.getByRole('option', { name: /clothing/i })
     ).toBeInTheDocument();
+  });
 
-    // await waitFor(() => fireEvent.click(screen.getByText(/electronic/i)));
+  it('should exist submit button', () => {
+    expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument();
+  });
+});
 
-    screen.debug();
-    // const typeButtonSelect = screen.getByRole('button', { name: /type/i });
-    // expect(typeButtonSelect).toBeInTheDocument();
-    // fireEvent.click(typeButtonSelect);
+describe('when the user submit the form without values', () => {
+  ///
+  it.only('should display validation messages', () => {
+    render(<Form />);
+    expect(screen.queryByText(/the name is required/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/the size is required/i)).not.toBeInTheDocument();
 
-    // expect(await screen.findByText(/electronic/i)).toBeInTheDocument();
-    // screen.debug();
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+    expect(screen.queryByText(/the name is required/i)).toBeInTheDocument();
+    expect(screen.queryByText(/the size is required/i)).toBeInTheDocument();
   });
 });
