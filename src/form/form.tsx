@@ -73,23 +73,6 @@ export function Form() {
           helperText={formErrors.size}
         />
 
-        {/* <FormControl fullWidth>
-        <InputLabel variant="standard" htmlFor="type">
-          Type
-        </InputLabel>
-        <NativeSelect
-          inputProps={{
-            name: 'type',
-            id: 'type',
-          }}
-        >
-          <option aria-label="None" value="" />
-          <option value="electronic">Electronic</option>
-          <option value="furniture">Furniture</option>
-          <option value="clothing">Clothing</option>
-        </NativeSelect>
-        </FormControl> */}
-
         <FormControl fullWidth>
           <InputLabel id="type">type</InputLabel>
           <Select
