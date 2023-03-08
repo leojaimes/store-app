@@ -56,7 +56,7 @@ describe('when the form is mounted ', () => {
 
 describe('when the user submit the form without values', () => {
   ///
-  it.only('should display validation messages', () => {
+  it('should display validation messages', () => {
     render(<Form />);
     expect(screen.queryByText(/the name is required/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/the size is required/i)).not.toBeInTheDocument();
@@ -66,5 +66,21 @@ describe('when the user submit the form without values', () => {
     expect(screen.queryByText(/the name is required/i)).toBeInTheDocument();
     expect(screen.queryByText(/the size is required/i)).toBeInTheDocument();
     expect(screen.queryByText(/the type is required/i)).toBeInTheDocument();
+  });
+});
+
+describe('when the user blurs a field that is empty', () => {
+  it.only('should display validation error message', () => {
+    render(<Form />);
+    fireEvent.blur(screen.getByLabelText(/name/i), {
+      target: { name: 'name', value: '' },
+    });
+    expect(screen.queryByText(/the name is required/i)).toBeInTheDocument();
+    fireEvent.blur(screen.getByLabelText(/size/i), {
+      target: { name: 'size', value: '' },
+    });
+    expect(screen.queryByText(/the size is required/i)).toBeInTheDocument();
+
+    screen.debug();
   });
 });

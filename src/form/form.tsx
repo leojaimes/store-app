@@ -6,7 +6,6 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  NativeSelect,
   Button,
   FormHelperText,
 } from '@mui/material';
@@ -55,6 +54,17 @@ export function Form() {
       }));
     }
   };
+
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
+  ) => {
+    const { name, value } = e.target;
+
+    setFormErrors((prevFormErrors) => ({
+      ...prevFormErrors,
+      [name]: value.length > 0 ? '' : `the ${name} is required`,
+    }));
+  };
   return (
     <Container maxWidth="xs">
       <CssBaseline />
@@ -65,12 +75,14 @@ export function Form() {
           id="name"
           name="name"
           helperText={formErrors.name}
+          onBlur={handleBlur}
         />
         <TextField
           label="size"
           id="size"
           name="size"
           helperText={formErrors.size}
+          onBlur={handleBlur}
         />
 
         <FormControl fullWidth>
@@ -83,6 +95,7 @@ export function Form() {
             displayEmpty
             label="Select Type"
             value=""
+            onBlur={handleBlur}
           >
             <MenuItem value="electronic">Electronic</MenuItem>
             <MenuItem value="furniture">Furniture</MenuItem>
