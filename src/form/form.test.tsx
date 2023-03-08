@@ -81,6 +81,9 @@ describe('when the user blurs a field that is empty', () => {
     });
     expect(screen.queryByText(/the size is required/i)).toBeInTheDocument();
 
+    fireEvent.blur(screen.getByTestId('type'), {
+      target: { name: 'type', value: '' },
+    });
     screen.debug();
   });
 });

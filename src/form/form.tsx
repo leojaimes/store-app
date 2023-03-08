@@ -59,12 +59,14 @@ export function Form() {
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
     const { name, value } = e.target;
-
+    console.log('handle blur');
     setFormErrors((prevFormErrors) => ({
       ...prevFormErrors,
       [name]: value.length > 0 ? '' : `the ${name} is required`,
     }));
   };
+
+  const handleOnClose = (e: React.SyntheticEvent<Element, Event>) => {};
   return (
     <Container maxWidth="xs">
       <CssBaseline />
@@ -95,7 +97,7 @@ export function Form() {
             displayEmpty
             label="Select Type"
             value=""
-            onBlur={handleBlur}
+            onClose={handleOnClose}
           >
             <MenuItem value="electronic">Electronic</MenuItem>
             <MenuItem value="furniture">Furniture</MenuItem>
