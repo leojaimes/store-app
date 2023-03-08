@@ -8,6 +8,7 @@ import {
   MenuItem,
   NativeSelect,
   Button,
+  FormHelperText,
 } from '@mui/material';
 import Container from '@mui/material/Container';
 import { useState } from 'react';
@@ -44,6 +45,13 @@ export function Form() {
       setFormErrors((prevFormErros) => ({
         ...prevFormErros,
         size: 'the size is required',
+      }));
+    }
+
+    if (!type.value) {
+      setFormErrors((prevFormErrors) => ({
+        ...prevFormErrors,
+        type: 'the type is required',
       }));
     }
   };
@@ -97,6 +105,7 @@ export function Form() {
             <MenuItem value="furniture">Furniture</MenuItem>
             <MenuItem value="clothing">Clothing</MenuItem>
           </Select>
+          <FormHelperText>{formErrors.type}</FormHelperText>
         </FormControl>
         <Button type="submit">Submit</Button>
       </form>
