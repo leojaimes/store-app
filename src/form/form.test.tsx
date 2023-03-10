@@ -1,20 +1,32 @@
 import { describe, it } from 'vitest';
-import {
-  render,
-  screen,
-  fireEvent,
-  getByRole,
-  waitFor,
-  within,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-
+import { render, screen, fireEvent } from '@testing-library/react';
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
 import { Form } from './form';
 
+const server = setupServer(
+  // Describe network behavior with request handlers.
+  // Tip: move the handlers into their own module and
+  // import it across your browser and Node.js setups!
+  rest.post('/login', (req, res, ctx) => {
+    return res(ctx.json({ token: 'mocked_user_token' }));
+  })
+);
+
+// Enable request interception.
+beforeAll(() => server.listen());
+
+// Reset handlers so that each test could alter them
+// without affecting other, unrelated tests.
+afterEach(() => server.resetHandlers());
+
+// Don't forget to clean up afterwards.
+afterAll(() => server.close());
+
+beforeEach(() => {
+  render(<Form />);
+});
 describe('when the form is mounted ', () => {
-  beforeEach(() => {
-    render(<Form />);
-  });
   it('here must be a create product form page', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Create Product'
@@ -70,7 +82,6 @@ describe('when the user submit the form without values', () => {
 
 describe('when the user blurs a field that is empty', () => {
   it('should display validation error message for the input name', async () => {
-    render(<Form />);
     expect(screen.queryByText(/the name is required/i)).not.toBeInTheDocument();
     fireEvent.blur(screen.getByLabelText(/name/i), {
       target: { name: 'name', value: '' },
@@ -79,7 +90,6 @@ describe('when the user blurs a field that is empty', () => {
   });
 
   it('should display validation error message for the input size', () => {
-    render(<Form />);
     expect(screen.queryByText(/the size is required/i)).not.toBeInTheDocument();
     fireEvent.blur(screen.getByLabelText(/size/i), {
       target: { name: 'size', value: '' },
@@ -88,11 +98,19 @@ describe('when the user blurs a field that is empty', () => {
   });
 
   it('should display validation error message for the input type', () => {
-    render(<Form />);
     expect(screen.queryByText(/the type is required/i)).not.toBeInTheDocument();
     // fireEvent.blur(screen.getByLabelText(/type/i), {
     //   target: { name: 'type', value: '' },
     // });
     // expect(screen.queryByText(/the type is required/i)).toBeInTheDocument();
+  });
+});
+
+describe('when the user submits the form ', () => {
+  it('it should the submit button be disabled until the request is done', () => {
+    expect(screen.getByRole('button', { name: /submit/i })).not.toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled();
   });
 });

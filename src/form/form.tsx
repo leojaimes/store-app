@@ -20,6 +20,7 @@ interface FormFields {
 }
 export function Form() {
   const [typeValue, setTypeValue] = useState<string>('');
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<FormFields>({
     name: '',
     size: '',
@@ -28,6 +29,7 @@ export function Form() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsSaving(true);
     const formElement = event.currentTarget;
     const formElements = formElement.elements as typeof formElement.elements & {
       name: { value: string };
@@ -60,7 +62,6 @@ export function Form() {
   const handleBlur = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
-    console.log('handleBlur');
     const { name, value } = e.target;
 
     setFormErrors((prevFormErrors) => ({
@@ -133,7 +134,9 @@ export function Form() {
           <MenuItem value="clothing">Clothing</MenuItem>
         </TextField>
 
-        <Button type="submit">Submit</Button>
+        <Button disabled={isSaving} type="submit">
+          Submit
+        </Button>
       </form>
     </Container>
   );
