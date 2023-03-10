@@ -20,6 +20,13 @@ interface FormFields {
   size: string;
   type: string;
 }
+
+interface FormValueFields {
+  name: { value: string };
+  size: { value: string };
+  type: { value: string };
+}
+
 export function Form() {
   const [typeValue, setTypeValue] = useState<string>('');
   const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -29,37 +36,25 @@ export function Form() {
     type: '',
   });
 
+  const validateField = (name: string, value: string) => {
+    setFormErrors((prevFormErros) => ({
+      ...prevFormErros,
+      [name]: value.length ? '' : `the ${[name]} is required`,
+    }));
+  };
+  const validateForm = ({ name, size, type }: FormValueFields) => {
+    validateField('name', name.value);
+    validateField('size', size.value);
+    validateField('type', type.value);
+  };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSaving(true);
     const formElement = event.currentTarget;
-    const formElements = formElement.elements as typeof formElement.elements & {
-      name: { value: string };
-      size: { value: string };
-      type: { value: string };
-    };
-    const { name, size, type } = formElements;
-    if (!name.value) {
-      setFormErrors((prevFormErros) => ({
-        ...prevFormErros,
-        name: 'the name is required',
-      }));
-    }
-
-    if (!size.value) {
-      setFormErrors((prevFormErros) => ({
-        ...prevFormErros,
-        size: 'the size is required',
-      }));
-    }
-
-    if (!type.value) {
-      setFormErrors((prevFormErrors) => ({
-        ...prevFormErrors,
-        type: 'the type is required',
-      }));
-    }
-
+    const formElements = formElement.elements as typeof formElement.elements &
+      FormValueFields;
+    // const { name, size, type } = formElements;
+    validateForm(formElements);
     // function timeout(ms: number) {
     //   // eslint-disable-next-line no-promise-executor-return
     //   return new Promise((resolve) => setTimeout(resolve, ms));
