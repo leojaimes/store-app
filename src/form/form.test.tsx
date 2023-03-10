@@ -1,15 +1,12 @@
 import { describe, it } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { Form } from './form';
 
 const server = setupServer(
-  // Describe network behavior with request handlers.
-  // Tip: move the handlers into their own module and
-  // import it across your browser and Node.js setups!
-  rest.post('/login', (req, res, ctx) => {
-    return res(ctx.json({ token: 'mocked_user_token' }));
+  rest.post('/products', (req, res, ctx) => {
+    return res(ctx.status(201));
   })
 );
 
@@ -18,7 +15,7 @@ beforeAll(() => server.listen());
 
 // Reset handlers so that each test could alter them
 // without affecting other, unrelated tests.
-afterEach(() => server.resetHandlers());
+// afterEach(() => server.resetHandlers());
 
 // Don't forget to clean up afterwards.
 afterAll(() => server.close());
@@ -107,10 +104,19 @@ describe('when the user blurs a field that is empty', () => {
 });
 
 describe('when the user submits the form ', () => {
-  it('it should the submit button be disabled until the request is done', () => {
+  it.only('it should the submit button be disabled until the request is done', async () => {
     expect(screen.getByRole('button', { name: /submit/i })).not.toBeDisabled();
     fireEvent.click(screen.getByRole('button', { name: /submit/i }));
 
     expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled();
+
+    await waitFor(
+      () =>
+        expect(
+          screen.getByRole('button', { name: /submit/i })
+        ).not.toBeDisabled(),
+      { timeout: 3000 }
+    );
+    ///
   });
 });

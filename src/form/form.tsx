@@ -11,7 +11,9 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import Container from '@mui/material/Container';
-import { ChangeEventHandler, useState } from 'react';
+import axios from 'axios';
+import { useState } from 'react';
+/// import fetch from 'node-fetch';
 
 interface FormFields {
   name: string;
@@ -27,7 +29,7 @@ export function Form() {
     type: '',
   });
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSaving(true);
     const formElement = event.currentTarget;
@@ -56,6 +58,21 @@ export function Form() {
         ...prevFormErrors,
         type: 'the type is required',
       }));
+    }
+
+    // function timeout(ms: number) {
+    //   // eslint-disable-next-line no-promise-executor-return
+    //   return new Promise((resolve) => setTimeout(resolve, ms));
+    // }
+    // await timeout(500);
+    // setIsSaving(false);
+    try {
+      await axios.post('/products', {});
+    } catch (e) {
+      ///
+      // console.log(e);
+    } finally {
+      setIsSaving(false);
     }
   };
 
