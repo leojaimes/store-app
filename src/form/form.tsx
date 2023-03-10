@@ -8,9 +8,10 @@ import {
   MenuItem,
   Button,
   FormHelperText,
+  SelectChangeEvent,
 } from '@mui/material';
 import Container from '@mui/material/Container';
-import { useState } from 'react';
+import { ChangeEventHandler, useState } from 'react';
 
 interface FormFields {
   name: string;
@@ -18,6 +19,7 @@ interface FormFields {
   type: string;
 }
 export function Form() {
+  const [typeValue, setTypeValue] = useState<string>('');
   const [formErrors, setFormErrors] = useState<FormFields>({
     name: '',
     size: '',
@@ -58,12 +60,19 @@ export function Form() {
   const handleBlur = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
+    console.log('handleBlur');
     const { name, value } = e.target;
-    console.log('handle blur');
+
     setFormErrors((prevFormErrors) => ({
       ...prevFormErrors,
       [name]: value.length > 0 ? '' : `the ${name} is required`,
     }));
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setTypeValue(e.target.value);
   };
 
   const handleOnClose = (e: React.SyntheticEvent<Element, Event>) => {};
@@ -87,7 +96,7 @@ export function Form() {
           onBlur={handleBlur}
         />
 
-        <FormControl fullWidth>
+        {/* <FormControl fullWidth>
           <InputLabel id="type">type</InputLabel>
           <Select
             data-testid="type"
@@ -96,15 +105,34 @@ export function Form() {
             labelId="type"
             displayEmpty
             label="Select Type"
-            value=""
+            value={typeValue}
             onClose={handleOnClose}
+            onChange={handleChange}
           >
             <MenuItem value="electronic">Electronic</MenuItem>
             <MenuItem value="furniture">Furniture</MenuItem>
             <MenuItem value="clothing">Clothing</MenuItem>
           </Select>
           <FormHelperText>{formErrors.type}</FormHelperText>
-        </FormControl>
+        </FormControl> */}
+
+        <TextField
+          id="type"
+          select
+          label="type"
+          name="type"
+          defaultValue=""
+          helperText={formErrors.type}
+          fullWidth
+          value={typeValue}
+          onBlur={handleBlur}
+          onChange={handleChange}
+        >
+          <MenuItem value="electronic">Electronic</MenuItem>
+          <MenuItem value="furniture">Furniture</MenuItem>
+          <MenuItem value="clothing">Clothing</MenuItem>
+        </TextField>
+
         <Button type="submit">Submit</Button>
       </form>
     </Container>
