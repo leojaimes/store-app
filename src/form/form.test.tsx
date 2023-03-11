@@ -145,11 +145,8 @@ describe('when the user submits the form ', () => {
       target: { name: 'size', value: 'my size' },
     });
 
-    // fireEvent.mouseDown(typeSelect, {
-    //   target: { name: 'type', value: 'electronic' },
-    // });
-
     fireEvent.mouseDown(typeSelect);
+
     expect(
       screen.getByRole('option', { name: /electronic/i })
     ).toBeInTheDocument();
