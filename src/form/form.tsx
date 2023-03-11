@@ -14,7 +14,11 @@ import Container from '@mui/material/Container';
 import axios from 'axios';
 import { useState } from 'react';
 import { saveProduct } from '../services/productServices';
-import { CREATED_STATUS } from '../consts/httpStatus';
+import {
+  CREATED_STATUS,
+  ERROR_SERVER_STATUS,
+  INVALID_REQUEST_STATUS,
+} from '../consts/httpStatus';
 /// import fetch from 'node-fetch';
 
 interface FormFields {
@@ -30,6 +34,7 @@ interface FormValueFields {
 }
 
 export function Form() {
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [typeValue, setTypeValue] = useState<string>('');
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
@@ -64,14 +69,25 @@ export function Form() {
       return new Promise((resolve) => setTimeout(resolve, ms));
     }
     await timeout(1000);
-    const res = await saveProduct({
-      name: name.value,
-      size: size.value,
-      type: type.value,
-    });
+    try {
+      const res = await saveProduct({
+        name: name.value,
+        size: size.value,
+        type: type.value,
+      });
 
+      if (res.status === CREATED_STATUS) {
+        setIsSuccess(true);
+        formElement.reset();
+      }
+    } catch (e) {
+      setErrorMessage('unexpected error, please try again');
+    }
+
+    // if (res.status === ERROR_SERVER_STATUS) {
+
+    // }
     setIsSaving(false);
-    if (res.status === CREATED_STATUS) setIsSuccess(true);
   };
 
   const handleBlur = (
@@ -93,6 +109,7 @@ export function Form() {
       <CssBaseline />
       <Typography component="h1">Create Product</Typography>
       {isSuccess && <p>product stored</p>}
+      <p>{errorMessage}</p>
       <form onSubmit={handleSubmit}>
         <TextField
           label="name"

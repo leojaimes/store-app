@@ -6,7 +6,7 @@ export interface Product {
   type: string;
 }
 
-type SaveProductFunction = () => void;
+// type SaveProductFunction = () => void;
 export const saveProduct = async (product: Product) => {
   console.log(`saving product ${JSON.stringify(product)}`);
 
@@ -14,3 +14,4 @@ export const saveProduct = async (product: Product) => {
 
   return res;
 };
+//
