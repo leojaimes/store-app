@@ -104,11 +104,19 @@ describe('when the user blurs a field that is empty', () => {
 });
 
 describe('when the user submits the form ', () => {
-  it.only('it should the submit button be disabled until the request is done', async () => {
+  it('it should the submit button be disabled until the request is done', async () => {
     const submitButton = screen.getByRole('button', { name: /submit/i });
     expect(submitButton).not.toBeDisabled();
     fireEvent.click(submitButton);
     expect(submitButton).toBeDisabled();
     await waitFor(() => expect(submitButton).not.toBeDisabled());
+  });
+
+  it.only('the form page must display the success message “Product stored”and clean the fields values', async () => {
+    const submitButton = screen.getByRole('button', { name: /submit/i });
+    fireEvent.click(submitButton);
+    await waitFor(() =>
+      expect(screen.getByText(/product stored/i)).toBeInTheDocument()
+    );
   });
 });

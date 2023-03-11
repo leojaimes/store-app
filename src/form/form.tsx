@@ -31,6 +31,8 @@ interface FormValueFields {
 export function Form() {
   const [typeValue, setTypeValue] = useState<string>('');
   const [isSaving, setIsSaving] = useState<boolean>(false);
+
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<FormFields>({
     name: '',
     size: '',
@@ -61,9 +63,10 @@ export function Form() {
       return new Promise((resolve) => setTimeout(resolve, ms));
     }
     await timeout(1000);
-    // setIsSaving(false);
-    await saveProduct();
+    const res = await saveProduct();
+
     setIsSaving(false);
+    if (res.status === 201) setIsSuccess(true);
   };
 
   const handleBlur = (
@@ -84,6 +87,7 @@ export function Form() {
     <Container maxWidth="xs">
       <CssBaseline />
       <Typography component="h1">Create Product</Typography>
+      {isSuccess && <p>product stored</p>}
       <form onSubmit={handleSubmit}>
         <TextField
           label="name"
