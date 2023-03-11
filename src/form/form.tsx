@@ -14,6 +14,7 @@ import Container from '@mui/material/Container';
 import axios from 'axios';
 import { useState } from 'react';
 import { saveProduct } from '../services/productServices';
+import { CREATED_STATUS } from '../consts/httpStatus';
 /// import fetch from 'node-fetch';
 
 interface FormFields {
@@ -66,7 +67,7 @@ export function Form() {
     const res = await saveProduct();
 
     setIsSaving(false);
-    if (res.status === 201) setIsSuccess(true);
+    if (res.status === CREATED_STATUS) setIsSuccess(true);
   };
 
   const handleBlur = (

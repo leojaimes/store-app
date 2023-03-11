@@ -3,10 +3,23 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { Form } from './form';
+import { CREATED_STATUS, INVALID_REQUEST_STATUS } from '../consts/httpStatus';
+
+interface PostRequestBody {
+  name: string;
+  size: string;
+  type: string;
+}
+
+// Describe the shape of the mocked response body.
 
 const server = setupServer(
-  rest.post('/products', (req, res, ctx) => {
-    return res(ctx.status(201));
+  rest.post<PostRequestBody>('/products', (req, res, ctx) => {
+    const { name, size, type } = req.body;
+    if (name && size && type) {
+      return res(ctx.status(CREATED_STATUS));
+    }
+    return res(ctx.status(INVALID_REQUEST_STATUS));
   })
 );
 
