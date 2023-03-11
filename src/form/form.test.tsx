@@ -109,8 +109,6 @@ describe('when the user submits the form ', () => {
     expect(submitButton).not.toBeDisabled();
     fireEvent.click(submitButton);
     expect(submitButton).toBeDisabled();
-    await waitFor(() => expect(submitButton).not.toBeDisabled(), {
-      timeout: 2000,
-    });
+    await waitFor(() => expect(submitButton).not.toBeDisabled());
   });
 });

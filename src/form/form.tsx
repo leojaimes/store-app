@@ -13,6 +13,7 @@ import {
 import Container from '@mui/material/Container';
 import axios from 'axios';
 import { useState } from 'react';
+import { saveProduct } from '../services/productServices';
 /// import fetch from 'node-fetch';
 
 interface FormFields {
@@ -55,31 +56,21 @@ export function Form() {
       FormValueFields;
     // const { name, size, type } = formElements;
     validateForm(formElements);
-    // function timeout(ms: number) {
-    //   // eslint-disable-next-line no-promise-executor-return
-    //   return new Promise((resolve) => setTimeout(resolve, ms));
-    // }
-    // await timeout(500);
-    // setIsSaving(false);
-    try {
-      await axios.post('/products', {});
-    } catch (e) {
-      ///
-      // console.log(e);
-    } finally {
-      setIsSaving(false);
+    function timeout(ms: number) {
+      // eslint-disable-next-line no-promise-executor-return
+      return new Promise((resolve) => setTimeout(resolve, ms));
     }
+    await timeout(1000);
+    // setIsSaving(false);
+    await saveProduct();
+    setIsSaving(false);
   };
 
   const handleBlur = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
     const { name, value } = e.target;
-
-    setFormErrors((prevFormErrors) => ({
-      ...prevFormErrors,
-      [name]: value.length > 0 ? '' : `the ${name} is required`,
-    }));
+    validateField(name, value);
   };
 
   const handleChange = (
