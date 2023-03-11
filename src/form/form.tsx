@@ -57,14 +57,18 @@ export function Form() {
     const formElement = event.currentTarget;
     const formElements = formElement.elements as typeof formElement.elements &
       FormValueFields;
-    // const { name, size, type } = formElements;
+    const { name, size, type } = formElements;
     validateForm(formElements);
     function timeout(ms: number) {
       // eslint-disable-next-line no-promise-executor-return
       return new Promise((resolve) => setTimeout(resolve, ms));
     }
     await timeout(1000);
-    const res = await saveProduct();
+    const res = await saveProduct({
+      name: name.value,
+      size: size.value,
+      type: type.value,
+    });
 
     setIsSaving(false);
     if (res.status === CREATED_STATUS) setIsSuccess(true);

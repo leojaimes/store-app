@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { Form } from './form';
-import { CREATED_STATUS, INVALID_REQUEST_STATUS } from '../consts/httpStatus';
+import { CREATED_STATUS, ERROR_SERVER_STATUS } from '../consts/httpStatus';
 
 interface PostRequestBody {
   name: string;
@@ -19,7 +19,7 @@ const server = setupServer(
     if (name && size && type) {
       return res(ctx.status(CREATED_STATUS));
     }
-    return res(ctx.status(INVALID_REQUEST_STATUS));
+    return res(ctx.status(ERROR_SERVER_STATUS));
   })
 );
 
@@ -127,6 +127,35 @@ describe('when the user submits the form ', () => {
 
   it.only('the form page must display the success message “Product stored”and clean the fields values', async () => {
     const submitButton = screen.getByRole('button', { name: /submit/i });
+
+    const nameTexField = screen.getByLabelText(/name/i);
+    expect(nameTexField).toBeInTheDocument();
+
+    const sizeTexField = screen.getByLabelText(/size/i);
+    expect(sizeTexField).toBeInTheDocument();
+
+    const typeSelect = screen.getByLabelText(/type/i);
+    expect(typeSelect).toBeInTheDocument();
+
+    fireEvent.change(nameTexField, {
+      target: { name: 'name', value: 'my product' },
+    });
+
+    fireEvent.change(sizeTexField, {
+      target: { name: 'size', value: 'my size' },
+    });
+
+    // fireEvent.mouseDown(typeSelect, {
+    //   target: { name: 'type', value: 'electronic' },
+    // });
+
+    fireEvent.mouseDown(typeSelect);
+    expect(
+      screen.getByRole('option', { name: /electronic/i })
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('option', { name: /electronic/i }));
+
     fireEvent.click(submitButton);
     await waitFor(() =>
       expect(screen.getByText(/product stored/i)).toBeInTheDocument()
