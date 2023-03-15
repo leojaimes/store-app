@@ -1,7 +1,8 @@
-import { describe, it } from 'vitest';
+import { describe, it, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
+import axios from 'axios';
 import { Form } from './form';
 import {
   CREATED_STATUS,
@@ -22,9 +23,10 @@ const server = setupServer(
     const { name, size, type } = req.body;
 
     if (name && size && type) {
+      console.log(`CREATED_STATUS ${CREATED_STATUS}`);
       return res(ctx.status(CREATED_STATUS));
     }
-    console.log('>>>>500<<<<<');
+    console.log(`CREATED_STATUS ${CREATED_STATUS}`);
     return res(ctx.status(ERROR_SERVER_STATUS));
   })
 );
@@ -38,6 +40,8 @@ beforeAll(() => server.listen());
 
 // Don't forget to clean up afterwards.
 afterAll(() => server.close());
+
+afterEach(() => server.resetHandlers());
 
 beforeEach(() => {
   render(<Form />);
@@ -169,7 +173,7 @@ describe('when the user submits the form ', () => {
 });
 
 describe('when the user submits the form and the server returns an unexpcted error', () => {
-  it.only('the form page must display error message "unexpected error, please try again"', async () => {
+  it('the form page must display error message "unexpected error, please try again"', async () => {
     const nameTexField = screen.getByLabelText(/name/i);
     expect(nameTexField).toHaveValue('');
     const submitButton = screen.getByRole('button', { name: /submit/i });
@@ -178,6 +182,36 @@ describe('when the user submits the form and the server returns an unexpcted err
       () =>
         expect(
           screen.getByText(/unexpected error, please try again/i)
+        ).toBeInTheDocument(),
+      { timeout: 2000 }
+    );
+  });
+});
+
+describe('when the user submits the form and the server returns an invalid request error', () => {
+  it('the form page must display error message “The form is invalid, the fields [field1...fieldN] are required”', async () => {
+    server.use(
+      rest.post('/products', (req, res, ctx) => {
+        console.log('Server should show Error 400 ');
+        return res(
+          ctx.status(400),
+          ctx.json({
+            message:
+              'The form is invalid, the fields name, size, type are required',
+          })
+        );
+      })
+    );
+    const nameTexField = screen.getByLabelText(/name/i);
+    expect(nameTexField).toHaveValue('');
+    const submitButton = screen.getByRole('button', { name: /submit/i });
+    fireEvent.click(submitButton);
+    await waitFor(
+      () =>
+        expect(
+          screen.getByText(
+            /The form is invalid, the fields name, size, type are required/i
+          )
         ).toBeInTheDocument(),
       { timeout: 4000 }
     );

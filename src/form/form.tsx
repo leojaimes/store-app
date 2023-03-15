@@ -11,7 +11,7 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import Container from '@mui/material/Container';
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useState } from 'react';
 import { saveProduct } from '../services/productServices';
 import {
@@ -69,6 +69,7 @@ export function Form() {
       return new Promise((resolve) => setTimeout(resolve, ms));
     }
     await timeout(1000);
+
     try {
       const res = await saveProduct({
         name: name.value,
@@ -80,13 +81,32 @@ export function Form() {
         setIsSuccess(true);
         formElement.reset();
       }
-    } catch (e) {
+      if (res.status === INVALID_REQUEST_STATUS) {
+        setErrorMessage('unexpected error, please try again');
+      }
+
+      if (res.status === 400) {
+        setErrorMessage(
+          'The form is invalid, the fields name, size, type are required'
+        );
+      }
+
+      console.log(`res.status >>>${res.status}`);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(` error.response.status ${error.response.status}`);
+        // console.log(error);
+        if (error.response.status === 400) {
+          setErrorMessage(
+            'The form is invalid, the fields name, size, type are required'
+          );
+          return;
+        }
+      }
+
       setErrorMessage('unexpected error, please try again');
     }
 
-    // if (res.status === ERROR_SERVER_STATUS) {
-
-    // }
     setIsSaving(false);
   };
 
