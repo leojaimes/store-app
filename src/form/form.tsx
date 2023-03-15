@@ -51,6 +51,27 @@ export function Form() {
       [name]: value.length ? '' : `the ${[name]} is required`,
     }));
   };
+
+  const handleFetchError = (error: unknown) => {
+    if (axios.isAxiosError(error) && error.response) {
+      console.log(` error.response.status ${error.response.status}`);
+      // console.log(error);
+      if (error.response.status === INVALID_REQUEST_STATUS) {
+        const data = error.response.data as { message: string };
+        // 'The form is invalid, the fields name, size, type are required'
+        setErrorMessage(data.message);
+        return;
+      }
+
+      if (error.response.status === ERROR_SERVER_STATUS) {
+        setErrorMessage('unexpected error, please try again');
+        return;
+      }
+    }
+
+    setErrorMessage('Connection error, please try later');
+  };
+
   const validateForm = ({ name, size, type }: FormValueFields) => {
     validateField('name', name.value);
     validateField('size', size.value);
@@ -84,18 +105,7 @@ export function Form() {
 
       console.log(`res.status >>>${res.status}`);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        console.log(` error.response.status ${error.response.status}`);
-        // console.log(error);
-        if (error.response.status === 400) {
-          setErrorMessage(
-            'The form is invalid, the fields name, size, type are required'
-          );
-          return;
-        }
-      }
-
-      setErrorMessage('unexpected error, please try again');
+      handleFetchError(error);
     }
 
     setIsSaving(false);

@@ -217,3 +217,25 @@ describe('when the user submits the form and the server returns an invalid reque
     );
   });
 });
+
+describe('when the user submits the form and the server returns an invalid request error', () => {
+  it('the form page must display error message “Connection error, please try later”', async () => {
+    server.use(
+      rest.post('/products', (req, res) => {
+        console.log('Server failed to connect');
+        return res.networkError('Failed to connect');
+      })
+    );
+    const nameTexField = screen.getByLabelText(/name/i);
+    expect(nameTexField).toHaveValue('');
+    const submitButton = screen.getByRole('button', { name: /submit/i });
+    fireEvent.click(submitButton);
+    await waitFor(
+      () =>
+        expect(
+          screen.getByText(/Connection error, please try later/i)
+        ).toBeInTheDocument(),
+      { timeout: 4000 }
+    );
+  });
+});
