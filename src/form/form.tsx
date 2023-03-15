@@ -54,7 +54,7 @@ export function Form() {
 
   const handleFetchError = (error: unknown) => {
     if (axios.isAxiosError(error) && error.response) {
-      console.log(` error.response.status ${error.response.status}`);
+      console.log(`error.response.status ${error.response.status}`);
       // console.log(error);
       if (error.response.status === INVALID_REQUEST_STATUS) {
         const data = error.response.data as { message: string };
@@ -68,7 +68,6 @@ export function Form() {
         return;
       }
     }
-
     setErrorMessage('Connection error, please try later');
   };
 
