@@ -81,15 +81,6 @@ export function Form() {
         setIsSuccess(true);
         formElement.reset();
       }
-      if (res.status === INVALID_REQUEST_STATUS) {
-        setErrorMessage('unexpected error, please try again');
-      }
-
-      if (res.status === 400) {
-        setErrorMessage(
-          'The form is invalid, the fields name, size, type are required'
-        );
-      }
 
       console.log(`res.status >>>${res.status}`);
     } catch (error) {
