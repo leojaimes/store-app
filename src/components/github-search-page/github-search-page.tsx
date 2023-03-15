@@ -1,7 +1,23 @@
-import React from 'react';
-import { Button, TextField, Typography, Container, Grid } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Button,
+  TextField,
+  Typography,
+  Container,
+  Grid,
+  Box,
+} from '@mui/material';
+import { timeout } from '../../utils';
 
 export function GitHubSearchPage() {
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+
+  const onSearchClick = async () => {
+    setIsSearching(true);
+
+    await timeout(1000);
+    setIsSearching(false);
+  };
   return (
     <Container>
       <Typography variant="h3" component="h1">
@@ -12,11 +28,29 @@ export function GitHubSearchPage() {
           <TextField fullWidth id="filterBy" label="filter by" />
         </Grid>
         <Grid item xs={12} md={3}>
-          <Button fullWidth color="primary" variant="contained">
+          <Button
+            onClick={onSearchClick}
+            disabled={isSearching}
+            fullWidth
+            color="primary"
+            variant="contained"
+          >
             Search
           </Button>
         </Grid>
       </Grid>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: 400,
+        }}
+      >
+        <Typography>
+          Please provide a search option and click in the search button
+        </Typography>
+      </Box>
     </Container>
   );
 }

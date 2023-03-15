@@ -19,6 +19,7 @@ import {
   ERROR_SERVER_STATUS,
   INVALID_REQUEST_STATUS,
 } from '../consts/httpStatus';
+import { timeout } from '../utils';
 /// import fetch from 'node-fetch';
 
 interface FormFields {
@@ -84,10 +85,7 @@ export function Form() {
       FormValueFields;
     const { name, size, type } = formElements;
     validateForm(formElements);
-    function timeout(ms: number) {
-      // eslint-disable-next-line no-promise-executor-return
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    }
+
     await timeout(1000);
 
     try {
