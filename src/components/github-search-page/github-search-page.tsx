@@ -14,7 +14,6 @@ export function GitHubSearchPage() {
 
   const onSearchClick = async () => {
     setIsSearching(true);
-
     await timeout(1000);
     setIsSearching(false);
   };
@@ -54,5 +53,3 @@ export function GitHubSearchPage() {
     </Container>
   );
 }
-
-// yarn test github-search-page.test.tsx
