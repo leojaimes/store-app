@@ -49,6 +49,7 @@ export function Content({ isSearchApplied }: ContentProps) {
         </Table>
       </TableContainer>
       <TablePagination
+        component="div"
         count={1}
         rowsPerPage={30}
         page={0}

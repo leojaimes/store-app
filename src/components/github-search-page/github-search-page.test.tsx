@@ -120,12 +120,12 @@ describe('when user does a search', () => {
     const perPageOptionsSelector = screen.getByLabelText(/rows per page/i);
 
     fireEvent.mouseDown(perPageOptionsSelector);
-    const listBox = screen.getAllByRole('listbox');
-    const options = within(listBox[0]).getAllByRole('option');
+    const listBox = screen.getByRole('listbox', { name: /rows per page/i });
+    const options = within(listBox).getAllByRole('option');
     const [option30, option50, option100] = options;
 
     // expects/assertions
-    expect(listBox).toHaveLength(1);
+    // expect(listBox).toHaveLength(1);
     expect(perPageOptionsSelector).toBeInTheDocument();
     expect(option30).toHaveTextContent('30');
     expect(option50).toHaveTextContent('50');
