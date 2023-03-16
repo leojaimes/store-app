@@ -6,6 +6,7 @@ import {
   Container,
   Grid,
   Box,
+  TablePagination,
 } from '@mui/material';
 import { timeout } from '../../utils';
 import { Content } from './content';

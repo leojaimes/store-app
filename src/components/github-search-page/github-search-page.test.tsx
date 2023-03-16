@@ -105,4 +105,30 @@ describe('when user does a search', () => {
       'http://localhost:3000/test'
     );
   });
+
+  it(`must display total results number of the search and the current number of results.  Example: 1-10 of 100`, async () => {
+    //
+    searchClick();
+    await screen.findByRole('table');
+    expect(screen.getByText(/1–1 of 1/i)).toBeInTheDocument();
+  });
+
+  it(`must display results size per page select/combobox with the options: 30, 50, 100. The default is 30`, async () => {
+    //
+    searchClick();
+    await screen.findByRole('table');
+    const perPageOptionsSelector = screen.getByLabelText(/rows per page/i);
+
+    fireEvent.mouseDown(perPageOptionsSelector);
+    const listBox = screen.getAllByRole('listbox');
+    const options = within(listBox[0]).getAllByRole('option');
+    const [option30, option50, option100] = options;
+
+    // expects/assertions
+    expect(listBox).toHaveLength(1);
+    expect(perPageOptionsSelector).toBeInTheDocument();
+    expect(option30).toHaveTextContent('30');
+    expect(option50).toHaveTextContent('50');
+    expect(option100).toHaveTextContent('100');
+  });
 });
