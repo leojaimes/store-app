@@ -8,20 +8,27 @@ import {
   Box,
 } from '@mui/material';
 import { timeout } from '../../utils';
+import { Content } from './content';
 
 export function GitHubSearchPage() {
   const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [isSearchApplied, setIsSearchApplied] = useState<boolean>(false);
 
   const onSearchClick = async () => {
     setIsSearching(true);
     await timeout(1000);
+    setIsSearchApplied(true);
     setIsSearching(false);
   };
+
   return (
     <Container>
-      <Typography variant="h3" component="h1">
-        Github Repositories List
-      </Typography>
+      <Box my={4}>
+        <Typography variant="h3" component="h1">
+          Github Repositories List
+        </Typography>
+      </Box>
+
       <Grid container spacing={2} justifyContent="space-between">
         <Grid item xs={12} md={9}>
           <TextField fullWidth id="filterBy" label="filter by" />
@@ -38,17 +45,9 @@ export function GitHubSearchPage() {
           </Button>
         </Grid>
       </Grid>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: 400,
-        }}
-      >
-        <Typography>
-          Please provide a search option and click in the search button
-        </Typography>
+      <Box my={4}>
+        {' '}
+        <Content isSearchApplied={isSearchApplied} />
       </Box>
     </Container>
   );
