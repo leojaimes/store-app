@@ -40,8 +40,11 @@ export function Content({ isSearchApplied, repositoryItems }: ContentProps) {
             {repositoryItems.map((repositoryItem) => (
               <TableRow key={`repository-item-${repositoryItem.id}`}>
                 <TableCell>
-                  <Avatar alt="test" src="/logo192.png" />
-                  <Link href="http://localhost:3000/test">
+                  <Avatar
+                    alt={repositoryItem.name}
+                    src={repositoryItem.owner.avatar_url}
+                  />
+                  <Link href={repositoryItem.html_url}>
                     {repositoryItem.name}
                   </Link>
                 </TableCell>

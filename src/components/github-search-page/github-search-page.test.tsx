@@ -100,7 +100,6 @@ describe('when user does a search', () => {
 
     const [repository, stars, forks, openIssues, updatedAt] = tableCells;
 
-    expect(within(repository).getAllByRole('img', { name: /test/i }));
     expect(tableCells).toHaveLength(5);
 
     // TODO:
@@ -118,10 +117,19 @@ describe('when user does a search', () => {
 
     expect(
       withinTable.getByText(getExampleGithubResult.items[0].name).closest('a')
-    ).toHaveAttribute('href', 'http://localhost:3000/test');
+    ).toHaveAttribute('href', getExampleGithubResult.items[0].html_url);
     expect(within(repository).getByRole('link')).toHaveAttribute(
       'href',
-      'http://localhost:3000/test'
+      getExampleGithubResult.items[0].html_url
+    );
+
+    const avatarImage = within(repository).getByRole('img', {
+      name: getExampleGithubResult.items[0].name,
+    });
+    expect(avatarImage).toBeInTheDocument();
+    expect(avatarImage).toHaveAttribute(
+      'src',
+      getExampleGithubResult.items[0].owner.avatar_url
     );
   });
 
