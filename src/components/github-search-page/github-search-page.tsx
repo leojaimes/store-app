@@ -8,8 +8,10 @@ import {
   Box,
   TablePagination,
 } from '@mui/material';
+import axios from 'axios';
 import { timeout } from '../../utils';
 import { Content } from './content';
+import { getRepositories } from '../../services/githubServices';
 
 export function GitHubSearchPage() {
   const [isSearching, setIsSearching] = useState<boolean>(false);
@@ -17,7 +19,16 @@ export function GitHubSearchPage() {
 
   const onSearchClick = async () => {
     setIsSearching(true);
-    await timeout(1000);
+    try {
+      await getRepositories({
+        q: 'react+language:phyton',
+        page: 1,
+        per_page: 1,
+      });
+    } catch (error) {
+      //
+    }
+
     setIsSearchApplied(true);
     setIsSearching(false);
   };

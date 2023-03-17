@@ -5,11 +5,16 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import { describe, it, vi } from 'vitest';
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
+import { getExampleGithubResult } from '../../types/github/data/responses';
 import { GitHubSearchPage } from './github-search-page';
-
 // yarn test github-search-page.test.tsx
-
+const server = setupServer(
+  rest.get('/posts', (req, res, ctx) => {
+    return res(ctx.json(getExampleGithubResult));
+  })
+);
 beforeEach(() => {
   render(<GitHubSearchPage />);
 });
@@ -35,6 +40,12 @@ describe('When Git Hub Page is mounted', () => {
     // ).toBeInTheDocument();
   });
 });
+
+beforeAll(() => server.listen());
+
+afterEach(() => server.resetHandlers());
+
+afterAll(() => server.close());
 
 describe('when user does a search', () => {
   const searchClick = () => {
@@ -90,7 +101,8 @@ describe('when user does a search', () => {
     expect(within(repository).getAllByRole('img', { name: /test/i }));
     expect(tableCells).toHaveLength(5);
 
-    expect(repository).toHaveTextContent(/test/);
+    // TODO:
+    expect(repository).toHaveTextContent(getExampleGithubResult.items[0].name);
     expect(stars).toHaveTextContent(/10/);
     expect(forks).toHaveTextContent(/5/);
     expect(openIssues).toHaveTextContent(/2/);
@@ -125,10 +137,25 @@ describe('when user does a search', () => {
     const [option30, option50, option100] = options;
 
     // expects/assertions
-    // expect(listBox).toHaveLength(1);
+
     expect(perPageOptionsSelector).toBeInTheDocument();
     expect(option30).toHaveTextContent('30');
     expect(option50).toHaveTextContent('50');
     expect(option100).toHaveTextContent('100');
   });
+
+  it(`must display next and previous pagination buttons`, async () => {
+    //
+    searchClick();
+    await screen.findByRole('table');
+    const previousButton = screen.getByRole('button', { name: /previous/i });
+
+    // assertions
+    expect(previousButton).toBeInTheDocument();
+    expect(previousButton).toBeDisabled();
+  });
+});
+
+describe('when the developer does a search without results', () => {
+  it.todo('must show a empty state message', async () => {});
 });
