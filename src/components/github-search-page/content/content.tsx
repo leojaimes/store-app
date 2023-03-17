@@ -37,7 +37,7 @@ export function Content({ isSearchApplied, repositoryItems }: ContentProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {repositoryItems.map((repositoryItem, index) => (
+            {repositoryItems.map((repositoryItem) => (
               <TableRow key={`repository-item-${repositoryItem.id}`}>
                 <TableCell>
                   <Avatar alt="test" src="/logo192.png" />
@@ -45,10 +45,12 @@ export function Content({ isSearchApplied, repositoryItems }: ContentProps) {
                     {repositoryItem.name}
                   </Link>
                 </TableCell>
-                <TableCell>10</TableCell>
-                <TableCell>5</TableCell>
-                <TableCell>2</TableCell>
-                <TableCell>2020-01-01</TableCell>
+                <TableCell>{repositoryItem.stargazers_count}</TableCell>
+                <TableCell>{repositoryItem.forks}</TableCell>
+                <TableCell>{repositoryItem.open_issues}</TableCell>
+                <TableCell>{`${new Date(
+                  repositoryItem.updated_at
+                ).toLocaleDateString()}`}</TableCell>
               </TableRow>
             ))}
           </TableBody>

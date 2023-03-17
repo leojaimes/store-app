@@ -105,10 +105,16 @@ describe('when user does a search', () => {
 
     // TODO:
     expect(repository).toHaveTextContent(getExampleGithubResult.items[0].name);
-    expect(stars).toHaveTextContent(/10/);
-    expect(forks).toHaveTextContent(/5/);
-    expect(openIssues).toHaveTextContent(/2/);
-    expect(updatedAt).toHaveTextContent(/2020-01-01/);
+    expect(stars).toHaveTextContent(
+      `${getExampleGithubResult.items[0].stargazers_count}`
+    );
+    expect(forks).toHaveTextContent(`${getExampleGithubResult.items[0].forks}`);
+    expect(openIssues).toHaveTextContent(
+      `${getExampleGithubResult.items[0].open_issues}`
+    );
+    expect(updatedAt).toHaveTextContent(
+      `${getExampleGithubResult.items[0].updated_at.toLocaleDateString()}`
+    );
 
     expect(
       withinTable.getByText(getExampleGithubResult.items[0].name).closest('a')
