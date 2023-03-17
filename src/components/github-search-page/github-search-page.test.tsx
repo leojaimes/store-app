@@ -11,10 +11,10 @@ import { getExampleGithubResult } from '../../types/github/data/responses';
 import { GitHubSearchPage } from './github-search-page';
 
 const url = 'https://api.github.com';
-
+const fakeRepo = getExampleGithubResult.items[0];
 const server = setupServer(
   rest.get(`${url}/search/repositories`, (req, res, ctx) => {
-    return res(ctx.json(getExampleGithubResult));
+    return res(ctx.status(200), ctx.json(getExampleGithubResult));
   })
 );
 beforeEach(() => {
@@ -48,12 +48,11 @@ beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 
 afterAll(() => server.close());
-
+const searchClick = () => {
+  const searchButton = screen.getByRole('button', { name: /search/i });
+  fireEvent.click(searchButton);
+};
 describe('when user does a search', () => {
-  const searchClick = () => {
-    const searchButton = screen.getByRole('button', { name: /search/i });
-    fireEvent.click(searchButton);
-  };
   it('the search button should be disabled until the search is done', async () => {
     const searchButton = screen.getByRole('button', { name: /search/i });
     expect(searchButton).not.toBeDisabled();
@@ -101,35 +100,27 @@ describe('when user does a search', () => {
     const [repository, stars, forks, openIssues, updatedAt] = tableCells;
 
     expect(tableCells).toHaveLength(5);
-
-    // TODO:
-    expect(repository).toHaveTextContent(getExampleGithubResult.items[0].name);
-    expect(stars).toHaveTextContent(
-      `${getExampleGithubResult.items[0].stargazers_count}`
-    );
-    expect(forks).toHaveTextContent(`${getExampleGithubResult.items[0].forks}`);
-    expect(openIssues).toHaveTextContent(
-      `${getExampleGithubResult.items[0].open_issues}`
-    );
-    expect(updatedAt).toHaveTextContent(
-      `${getExampleGithubResult.items[0].updated_at.toLocaleDateString()}`
-    );
-
-    expect(
-      withinTable.getByText(getExampleGithubResult.items[0].name).closest('a')
-    ).toHaveAttribute('href', getExampleGithubResult.items[0].html_url);
-    expect(within(repository).getByRole('link')).toHaveAttribute(
-      'href',
-      getExampleGithubResult.items[0].html_url
-    );
+    expect(repository).toHaveTextContent(fakeRepo.name);
 
     const avatarImage = within(repository).getByRole('img', {
-      name: getExampleGithubResult.items[0].name,
+      name: fakeRepo.name,
     });
     expect(avatarImage).toBeInTheDocument();
-    expect(avatarImage).toHaveAttribute(
-      'src',
-      getExampleGithubResult.items[0].owner.avatar_url
+    expect(avatarImage).toHaveAttribute('src', fakeRepo.owner.avatar_url);
+    expect(stars).toHaveTextContent(`${fakeRepo.stargazers_count}`);
+    expect(forks).toHaveTextContent(`${fakeRepo.forks}`);
+    expect(openIssues).toHaveTextContent(`${fakeRepo.open_issues}`);
+    expect(updatedAt).toHaveTextContent(
+      `${fakeRepo.updated_at.toLocaleDateString()}`
+    );
+
+    expect(withinTable.getByText(fakeRepo.name).closest('a')).toHaveAttribute(
+      'href',
+      fakeRepo.html_url
+    );
+    expect(within(repository).getByRole('link')).toHaveAttribute(
+      'href',
+      fakeRepo.html_url
     );
   });
 
@@ -172,5 +163,30 @@ describe('when user does a search', () => {
 });
 
 describe('when the developer does a search without results', () => {
-  it.todo('must show a empty state message', async () => {});
+  it('must show a empty state message: Your search has no results', async () => {
+    // set the mock ser no items
+    server.use(
+      rest.get(`${url}/search/repositories`, (req, res, ctx) => {
+        return res(
+          ctx.status(200),
+          ctx.json({
+            total_count: 0,
+            incomplete_results: false,
+            items: [],
+          })
+        );
+      })
+    );
+    // click on search
+    searchClick();
+    // expect not table
+    // expect message no results
+
+    await waitFor(() =>
+      expect(
+        screen.getByText(/Your search has no results/i)
+      ).toBeInTheDocument()
+    );
+    expect(screen.queryByRole('table')).not.toBeInTheDocument(); // query si no encuentra el elemento no va a hacer que el query se detenga
+  });
 });
