@@ -11,9 +11,11 @@ import {
   Link,
   TablePagination,
 } from '@mui/material';
+import { RepositoryItem } from '../../../types/github/index';
 
 interface ContentProps {
   isSearchApplied: boolean;
+  repositoryItems: RepositoryItem[];
 }
 const tableHeaders = [
   'Repository',
@@ -22,7 +24,7 @@ const tableHeaders = [
   'Open Issues',
   'Updated at',
 ];
-export function Content({ isSearchApplied }: ContentProps) {
+export function Content({ isSearchApplied, repositoryItems }: ContentProps) {
   return isSearchApplied ? (
     <>
       <TableContainer>
@@ -35,16 +37,20 @@ export function Content({ isSearchApplied }: ContentProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
-              <TableCell>
-                <Avatar alt="test" src="/logo192.png" />
-                <Link href="http://localhost:3000/test">test</Link>
-              </TableCell>
-              <TableCell>10</TableCell>
-              <TableCell>5</TableCell>
-              <TableCell>2</TableCell>
-              <TableCell>2020-01-01</TableCell>
-            </TableRow>
+            {repositoryItems.map((repositoryItem, index) => (
+              <TableRow key={`repository-item-${repositoryItem.id}`}>
+                <TableCell>
+                  <Avatar alt="test" src="/logo192.png" />
+                  <Link href="http://localhost:3000/test">
+                    {repositoryItem.name}
+                  </Link>
+                </TableCell>
+                <TableCell>10</TableCell>
+                <TableCell>5</TableCell>
+                <TableCell>2</TableCell>
+                <TableCell>2020-01-01</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>

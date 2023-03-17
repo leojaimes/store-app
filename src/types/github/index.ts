@@ -1,10 +1,10 @@
 export interface GithubResult {
   total_count: number;
   incomplete_results: boolean;
-  items: Item[];
+  items: RepositoryItem[];
 }
 
-export interface Item {
+export interface RepositoryItem {
   id: number;
   node_id: string;
   name: string;

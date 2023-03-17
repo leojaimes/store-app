@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { GithubResult } from '../types/github/index';
 
 export interface SarchRequestQueryParams {
   q?: string;
@@ -11,8 +12,9 @@ const url = 'https://api.github.com';
 export const getRepositories = async (
   searchParams: SarchRequestQueryParams
 ) => {
-  await axios.get(`${url}/search/repositories`, {
+  const res = await axios.get<GithubResult>(`${url}/search/repositories`, {
     params: searchParams,
   });
+  return res;
 };
 //

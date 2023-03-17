@@ -9,9 +9,11 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { getExampleGithubResult } from '../../types/github/data/responses';
 import { GitHubSearchPage } from './github-search-page';
-// yarn test github-search-page.test.tsx
+
+const url = 'https://api.github.com';
+
 const server = setupServer(
-  rest.get('/posts', (req, res, ctx) => {
+  rest.get(`${url}/search/repositories`, (req, res, ctx) => {
     return res(ctx.json(getExampleGithubResult));
   })
 );
@@ -108,10 +110,9 @@ describe('when user does a search', () => {
     expect(openIssues).toHaveTextContent(/2/);
     expect(updatedAt).toHaveTextContent(/2020-01-01/);
 
-    expect(withinTable.getByText(/test/i).closest('a')).toHaveAttribute(
-      'href',
-      'http://localhost:3000/test'
-    );
+    expect(
+      withinTable.getByText(getExampleGithubResult.items[0].name).closest('a')
+    ).toHaveAttribute('href', 'http://localhost:3000/test');
     expect(within(repository).getByRole('link')).toHaveAttribute(
       'href',
       'http://localhost:3000/test'

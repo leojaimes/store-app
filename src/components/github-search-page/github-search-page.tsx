@@ -9,24 +9,28 @@ import {
   TablePagination,
 } from '@mui/material';
 import axios from 'axios';
-import { timeout } from '../../utils';
+
 import { Content } from './content';
 import { getRepositories } from '../../services/githubServices';
+import { RepositoryItem } from '../../types/github/index';
 
 export function GitHubSearchPage() {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isSearchApplied, setIsSearchApplied] = useState<boolean>(false);
-
+  const [repositoryItems, setRepositoryItems] = useState<RepositoryItem[]>([]);
   const onSearchClick = async () => {
     setIsSearching(true);
     try {
-      await getRepositories({
+      const res = await getRepositories({
         q: 'react+language:phyton',
         page: 1,
         per_page: 1,
       });
+      setRepositoryItems(res.data.items);
     } catch (error) {
-      //
+      if (axios.isAxiosError(error) && error.response) {
+        ///
+      }
     }
 
     setIsSearchApplied(true);
@@ -59,7 +63,10 @@ export function GitHubSearchPage() {
       </Grid>
       <Box my={4}>
         {' '}
-        <Content isSearchApplied={isSearchApplied} />
+        <Content
+          isSearchApplied={isSearchApplied}
+          repositoryItems={repositoryItems}
+        />
       </Box>
     </Container>
   );
