@@ -10,7 +10,11 @@ import { setupServer } from 'msw/node';
 import { OK_STATUS } from '../../consts/httpStatus';
 import { getExampleGithubResult } from '../../types/github/data/responses';
 import { GitHubSearchPage } from './github-search-page';
-import { makeFakeResponse, getReposListBy } from '../../__fixtures__/repos';
+import {
+  makeFakeResponse,
+  getReposListBy,
+  getReposPerPage,
+} from '../../__fixtures__/repos';
 
 const url = '';
 const fakeRepo = getExampleGithubResult.items[0];
@@ -196,7 +200,7 @@ describe('when the developer does a search without results', () => {
 describe('when the developer types or filter by and does a search', () => {
   it('must display the related repos', async () => {
     const searchBy = 'laravel';
-    const expectedData = getReposListBy({ name: searchBy });
+    const expectedData = getReposListBy({ name: searchBy })[0];
 
     // setup mock server
     server.use(
@@ -225,10 +229,35 @@ describe('when the developer types or filter by and does a search', () => {
     const [repository] = tableCells;
 
     expect(tableCells).toHaveLength(5);
-    expect(repository).toHaveTextContent(expectedData[0].name);
+    expect(repository).toHaveTextContent(expectedData.name);
+  });
+});
 
-    // const avatarImage = within(repository).getByRole('img', {
-    //   name: fakeRepo.name,
-    // });
+describe('when the developer does a search and select 50 rows per page', () => {
+  it('must fetch a new search and display 50 rows results on the table', async () => {
+    // config mock server response
+    const searchBy = 'laravel';
+    const expectedData = getReposListBy({ name: searchBy })[0];
+
+    server.use(
+      rest.get(`/search/repositories`, (req, res, ctx) => {
+        const q = req.url.searchParams.get('q');
+        const page = req.url.searchParams.get('page');
+        const perPage = req.url.searchParams.get('per_page');
+
+        getReposPerPage({
+          currentPage: !Number.isNaN(Number(page)) ? Number(page) : 1,
+          perPage: !Number.isNaN(Number(perPage)) ? Number(perPage) : 10,
+        });
+
+        res(ctx.status(OK_STATUS), ctx.json({}));
+      })
+    );
+    // click search
+    searchClick();
+    const table = await screen.findByRole('table');
+    // expect 30 per page
+    // select 50 per page
+    // expect 50 rows lenght
   });
 });
