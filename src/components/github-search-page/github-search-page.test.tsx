@@ -7,14 +7,15 @@ import {
 } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
+import { OK_STATUS } from '../../consts/httpStatus';
 import { getExampleGithubResult } from '../../types/github/data/responses';
 import { GitHubSearchPage } from './github-search-page';
 
-const url = 'https://api.github.com';
+const url = '';
 const fakeRepo = getExampleGithubResult.items[0];
 const server = setupServer(
   rest.get(`${url}/search/repositories`, (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json(getExampleGithubResult));
+    return res(ctx.status(OK_STATUS), ctx.json(getExampleGithubResult));
   })
 );
 beforeEach(() => {
@@ -168,7 +169,7 @@ describe('when the developer does a search without results', () => {
     server.use(
       rest.get(`${url}/search/repositories`, (req, res, ctx) => {
         return res(
-          ctx.status(200),
+          ctx.status(OK_STATUS),
           ctx.json({
             total_count: 0,
             incomplete_results: false,

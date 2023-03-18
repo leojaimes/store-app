@@ -12,54 +12,38 @@ import {
   TablePagination,
 } from '@mui/material';
 import { RepositoryItem } from '../../../types/github/index';
+import { GithubTable } from './GithubTable/GithubTable';
 
 interface ContentProps {
   isSearchApplied: boolean;
   repositoryItems: RepositoryItem[];
 }
-const tableHeaders = [
-  'Repository',
-  'Stars',
-  'Forks',
-  'Open Issues',
-  'Updated at',
-];
+
+interface TableStatusMessageBoxProps {
+  children: React.ReactNode;
+}
+export function TableStatusMessageBox({
+  children,
+}: TableStatusMessageBoxProps) {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 400,
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
+
 export function Content({ isSearchApplied, repositoryItems }: ContentProps) {
   if (isSearchApplied && !!repositoryItems.length) {
     return (
       <>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {tableHeaders.map((name, index) => (
-                  <TableCell key={`${name}-${index + 1}`}>{name}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {repositoryItems.map((repositoryItem) => (
-                <TableRow key={`repository-item-${repositoryItem.id}`}>
-                  <TableCell>
-                    <Avatar
-                      alt={repositoryItem.name}
-                      src={repositoryItem.owner.avatar_url}
-                    />
-                    <Link href={repositoryItem.html_url}>
-                      {repositoryItem.name}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{repositoryItem.stargazers_count}</TableCell>
-                  <TableCell>{repositoryItem.forks}</TableCell>
-                  <TableCell>{repositoryItem.open_issues}</TableCell>
-                  <TableCell>{`${new Date(
-                    repositoryItem.updated_at
-                  ).toLocaleDateString()}`}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <GithubTable repositoryItems={repositoryItems} />
         <TablePagination
           component="div"
           count={1}
@@ -74,31 +58,17 @@ export function Content({ isSearchApplied, repositoryItems }: ContentProps) {
 
   if (isSearchApplied && !repositoryItems.length) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: 400,
-        }}
-      >
+      <TableStatusMessageBox>
         <Typography>Your search has no results</Typography>
-      </Box>
+      </TableStatusMessageBox>
     );
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 400,
-      }}
-    >
+    <TableStatusMessageBox>
       <Typography>
         Please provide a search option and click in the search button
       </Typography>
-    </Box>
+    </TableStatusMessageBox>
   );
 }
