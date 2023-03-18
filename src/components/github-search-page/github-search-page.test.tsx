@@ -195,6 +195,9 @@ describe('when the developer does a search without results', () => {
 
 describe('when the developer types or filter by and does a search', () => {
   it('must display the related repos', async () => {
+    const searchBy = 'laravel';
+    const expectedData = getReposListBy({ name: searchBy });
+
     // setup mock server
     server.use(
       rest.get(`/search/repositories`, (req, res, ctx) => {
@@ -208,20 +211,21 @@ describe('when the developer types or filter by and does a search', () => {
     );
     // type for a word in filter by input
     fireEvent.change(screen.getByLabelText(/filter by/i), {
-      target: { value: 'laravel' },
+      target: { value: searchBy },
     });
     // click on search
     searchClick();
     // expect the table content
-    expect(await screen.findByRole('table')).toBeInTheDocument();
+    const table = await screen.findByRole('table');
+    expect(table).toBeInTheDocument();
 
-    // const withinTable = within(table);
-    // const tableCells = withinTable.getAllByRole('cell');
+    const withinTable = within(table);
+    const tableCells = withinTable.getAllByRole('cell');
 
-    // const [repository, stars, forks, openIssues, updatedAt] = tableCells;
+    const [repository] = tableCells;
 
-    // expect(tableCells).toHaveLength(5);
-    // expect(repository).toHaveTextContent(fakeRepo.name);
+    expect(tableCells).toHaveLength(5);
+    expect(repository).toHaveTextContent(expectedData[0].name);
 
     // const avatarImage = within(repository).getByRole('img', {
     //   name: fakeRepo.name,
