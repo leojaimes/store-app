@@ -19,12 +19,12 @@ export function GitHubSearchPage() {
   const [isSearchApplied, setIsSearchApplied] = useState<boolean>(false);
   const [repositoryItems, setRepositoryItems] = useState<RepositoryItem[]>([]);
 
-  const [filter, setFilter] = useState<string>('');
+  const [searchBy, setSearchBy] = useState<string>('');
   const onSearchClick = async () => {
     setIsSearching(true);
     try {
       const res = await getRepositories({
-        q: filter,
+        q: searchBy,
         page: 1,
         per_page: 10,
       });
@@ -53,9 +53,9 @@ export function GitHubSearchPage() {
             fullWidth
             id="filterBy"
             label="filter by"
-            name="filter by"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
+            name="fiter by"
+            value={searchBy}
+            onChange={(e) => setSearchBy(e.target.value)}
           />
         </Grid>
         <Grid item xs={12} md={3}>

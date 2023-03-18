@@ -213,6 +213,18 @@ describe('when the developer types or filter by and does a search', () => {
     // click on search
     searchClick();
     // expect the table content
-    expect(await screen.findByRole('table'));
+    expect(await screen.findByRole('table')).toBeInTheDocument();
+
+    // const withinTable = within(table);
+    // const tableCells = withinTable.getAllByRole('cell');
+
+    // const [repository, stars, forks, openIssues, updatedAt] = tableCells;
+
+    // expect(tableCells).toHaveLength(5);
+    // expect(repository).toHaveTextContent(fakeRepo.name);
+
+    // const avatarImage = within(repository).getByRole('img', {
+    //   name: fakeRepo.name,
+    // });
   });
 });
