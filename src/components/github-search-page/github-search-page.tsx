@@ -18,11 +18,13 @@ export function GitHubSearchPage() {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isSearchApplied, setIsSearchApplied] = useState<boolean>(false);
   const [repositoryItems, setRepositoryItems] = useState<RepositoryItem[]>([]);
+
+  const [filter, setFilter] = useState<string>('');
   const onSearchClick = async () => {
     setIsSearching(true);
     try {
       const res = await getRepositories({
-        q: 'react+language:phyton',
+        q: filter,
         page: 1,
         per_page: 10,
       });
@@ -47,7 +49,14 @@ export function GitHubSearchPage() {
 
       <Grid container spacing={2} justifyContent="space-between">
         <Grid item xs={12} md={9}>
-          <TextField fullWidth id="filterBy" label="filter by" />
+          <TextField
+            fullWidth
+            id="filterBy"
+            label="filter by"
+            name="filter by"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          />
         </Grid>
         <Grid item xs={12} md={3}>
           <Button

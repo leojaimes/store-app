@@ -10,6 +10,7 @@ import { setupServer } from 'msw/node';
 import { OK_STATUS } from '../../consts/httpStatus';
 import { getExampleGithubResult } from '../../types/github/data/responses';
 import { GitHubSearchPage } from './github-search-page';
+import { makeFakeResponse, getReposListBy } from '../../__fixtures__/repos';
 
 const url = '';
 const fakeRepo = getExampleGithubResult.items[0];
@@ -193,5 +194,25 @@ describe('when the developer does a search without results', () => {
 });
 
 describe('when the developer types or filter by and does a search', () => {
-  it('must display the related repos', () => {});
+  it('must display the related repos', async () => {
+    // setup mock server
+    server.use(
+      rest.get(`/search/repositories`, (req, res, ctx) => {
+        const fakeResponse = makeFakeResponse();
+        const q = req.url.searchParams.get('q');
+        const items = getReposListBy({ name: q });
+        const newResponse = { ...fakeResponse, items };
+
+        return res(ctx.status(OK_STATUS), ctx.json(newResponse));
+      })
+    );
+    // type for a word in filter by input
+    fireEvent.change(screen.getByLabelText(/filter by/i), {
+      target: { value: 'laravel' },
+    });
+    // click on search
+    searchClick();
+    // expect the table content
+    expect(await screen.findByRole('table'));
+  });
 });

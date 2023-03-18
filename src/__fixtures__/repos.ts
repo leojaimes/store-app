@@ -30,10 +30,16 @@ const reposData = ['go', 'freeCodeCamp', 'laravel', 'Python', 'Java'];
 
 const reposList = reposData.map((name) => makeFakeRepo({ name, id: name }));
 
-export const getReposListBy = ({ name }) =>
+export const getReposListBy = ({ name }: { name: string | null }) =>
   reposList.filter((repo) => repo.name === name);
 
-export const getReposPerPage = ({ currentPage, perPage }) => {
+export const getReposPerPage = ({
+  currentPage,
+  perPage,
+}: {
+  currentPage: number;
+  perPage: number;
+}) => {
   return perPage === 30
     ? repos30Paginated[currentPage]
     : repos50Paginated[currentPage];
