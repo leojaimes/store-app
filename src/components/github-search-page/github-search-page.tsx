@@ -24,7 +24,7 @@ export function GitHubSearchPage() {
       const res = await getRepositories({
         q: 'react+language:phyton',
         page: 1,
-        per_page: 1,
+        per_page: 10,
       });
       setRepositoryItems(res.data.items);
     } catch (error) {

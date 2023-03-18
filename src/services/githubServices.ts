@@ -6,14 +6,12 @@ export interface SarchRequestQueryParams {
   page?: number;
   per_page: number;
 }
-const url = 'https://api.github.com';
 
 const baseUrl =
   import.meta.env.NODE_ENV === 'test'
     ? ''
     : import.meta.env.VITE_REACT_APP_BASE_URL;
-console.log(`REACT_APP_BASE_URL: ${import.meta.env.VITE_REACT_APP_BASE_URL}`);
-// type SaveProductFunction = () => void;
+
 export const getRepositories = async (
   searchParams: SarchRequestQueryParams
 ) => {
@@ -22,4 +20,3 @@ export const getRepositories = async (
   });
   return res;
 };
-//

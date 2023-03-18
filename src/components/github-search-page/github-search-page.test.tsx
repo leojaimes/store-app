@@ -191,3 +191,7 @@ describe('when the developer does a search without results', () => {
     expect(screen.queryByRole('table')).not.toBeInTheDocument(); // query si no encuentra el elemento no va a hacer que el query se detenga
   });
 });
+
+describe('when the developer types or filter by and does a search', () => {
+  it('must display the related repos', () => {});
+});
