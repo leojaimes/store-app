@@ -26,7 +26,7 @@ export function GitHubSearchPage() {
       const res = await getRepositories({
         q: searchBy,
         page: 1,
-        per_page: 50,
+        per_page: 30,
       });
       console.log(
         `res.data.items.length ${JSON.stringify(res.data.items.length)}`
