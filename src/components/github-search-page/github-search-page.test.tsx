@@ -245,7 +245,7 @@ describe('when the developer does a search and select 50 rows per page', () => {
         const fakeResponse = makeFakeResponse();
         const items = getReposPerPage({
           currentPage: !Number.isNaN(Number(page)) ? Number(page) : 1,
-          perPage: !Number.isNaN(Number(perPage)) ? Number(perPage) : 10,
+          perPage: !Number.isNaN(Number(perPage)) ? Number(perPage) : 30,
         });
         const response = { ...fakeResponse, items };
         console.log(
@@ -260,10 +260,15 @@ describe('when the developer does a search and select 50 rows per page', () => {
 
     const table = await screen.findByRole('table');
     expect(table).toBeInTheDocument();
-
-    expect(await screen.findAllByRole('row')).toHaveLength(31);
     // expect 30 per page
-    // select 50 per page
+    expect(await screen.findAllByRole('row')).toHaveLength(31);
+    fireEvent.mouseDown(screen.getByLabelText(/rows per page/i));
+    // // select 50 per page
+    fireEvent.click(screen.getByRole('option', { name: '50' }));
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /search/i })).not.toBeDisabled()
+    );
     // expect 50 rows lenght
+    expect(await screen.findAllByRole('row')).toHaveLength(51);
   });
 });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useCallback, useState, useRef } from 'react';
 import {
   Button,
   TextField,
@@ -20,13 +20,17 @@ export function GitHubSearchPage() {
   const [repositoryItems, setRepositoryItems] = useState<RepositoryItem[]>([]);
 
   const [searchBy, setSearchBy] = useState<string>('');
-  const onSearchClick = async () => {
+
+  const [rowsPerPage, setRowsPerPage] = useState<number>(30);
+  const didMount = useRef(false);
+
+  const onSearchClick = useCallback(async () => {
     setIsSearching(true);
     try {
       const res = await getRepositories({
         q: searchBy,
         page: 1,
-        per_page: 30,
+        per_page: rowsPerPage,
       });
       console.log(
         `res.data.items.length ${JSON.stringify(res.data.items.length)}`
@@ -40,7 +44,15 @@ export function GitHubSearchPage() {
 
     setIsSearchApplied(true);
     setIsSearching(false);
-  };
+  }, [rowsPerPage, searchBy]);
+
+  useEffect(() => {
+    if (!didMount.current) {
+      didMount.current = true;
+      return;
+    }
+    onSearchClick();
+  }, [onSearchClick]);
 
   return (
     <Container>
@@ -78,6 +90,8 @@ export function GitHubSearchPage() {
         <Content
           isSearchApplied={isSearchApplied}
           repositoryItems={repositoryItems}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
         />
       </Box>
     </Container>

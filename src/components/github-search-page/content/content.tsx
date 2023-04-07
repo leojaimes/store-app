@@ -17,6 +17,8 @@ import { GithubTable } from './GithubTable/GithubTable';
 interface ContentProps {
   isSearchApplied: boolean;
   repositoryItems: RepositoryItem[];
+  rowsPerPage: number;
+  setRowsPerPage: (rows: number) => void;
 }
 
 interface TableStatusMessageBoxProps {
@@ -39,7 +41,12 @@ export function TableStatusMessageBox({
   );
 }
 
-export function Content({ isSearchApplied, repositoryItems }: ContentProps) {
+export function Content({
+  isSearchApplied,
+  repositoryItems,
+  rowsPerPage,
+  setRowsPerPage,
+}: ContentProps) {
   console.log(`Content repositoryItems.length: ${repositoryItems.length}`);
   if (isSearchApplied && !!repositoryItems.length) {
     return (
@@ -48,9 +55,15 @@ export function Content({ isSearchApplied, repositoryItems }: ContentProps) {
         <TablePagination
           component="div"
           count={1}
-          rowsPerPage={30}
+          rowsPerPage={rowsPerPage}
           page={0}
           onPageChange={() => {}}
+          onRowsPerPageChange={(e) => {
+            const newRowsPerPage = e.target.value;
+            console.log(`newRowsPerPage ${newRowsPerPage}`);
+            setRowsPerPage(Number(newRowsPerPage));
+            console.log(`RowsPerPage ${rowsPerPage}`);
+          }}
           rowsPerPageOptions={[30, 50, 100]}
         />
       </>
