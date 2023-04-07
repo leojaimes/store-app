@@ -40,6 +40,10 @@ export const getReposPerPage = ({
   currentPage: number;
   perPage: number;
 }) => {
+  console.log(`currenPage: ${currentPage} perPage: ${perPage}`);
+  console.log(
+    `repos50Paginated[currentPage].length: ${repos50Paginated[currentPage].length}`
+  );
   return perPage === 30
     ? repos30Paginated[currentPage]
     : repos50Paginated[currentPage];

@@ -40,6 +40,7 @@ export function TableStatusMessageBox({
 }
 
 export function Content({ isSearchApplied, repositoryItems }: ContentProps) {
+  console.log(`Content repositoryItems.length: ${repositoryItems.length}`);
   if (isSearchApplied && !!repositoryItems.length) {
     return (
       <>

@@ -236,26 +236,32 @@ describe('when the developer types or filter by and does a search', () => {
 describe('when the developer does a search and select 50 rows per page', () => {
   it('must fetch a new search and display 50 rows results on the table', async () => {
     // config mock server response
-    const searchBy = 'laravel';
-    const expectedData = getReposListBy({ name: searchBy })[0];
 
     server.use(
       rest.get(`/search/repositories`, (req, res, ctx) => {
-        const q = req.url.searchParams.get('q');
+        // const q = req.url.searchParams.get('q');
         const page = req.url.searchParams.get('page');
         const perPage = req.url.searchParams.get('per_page');
-
-        getReposPerPage({
+        const fakeResponse = makeFakeResponse();
+        const items = getReposPerPage({
           currentPage: !Number.isNaN(Number(page)) ? Number(page) : 1,
           perPage: !Number.isNaN(Number(perPage)) ? Number(perPage) : 10,
         });
-
-        res(ctx.status(OK_STATUS), ctx.json({}));
+        const response = { ...fakeResponse, items };
+        console.log(
+          `FROM TEST: response.items.length ${response.items.length}`
+        );
+        return res(ctx.status(OK_STATUS), ctx.json(response));
       })
     );
+
     // click search
     searchClick();
+
     const table = await screen.findByRole('table');
+    expect(table).toBeInTheDocument();
+
+    expect(await screen.findAllByRole('row')).toHaveLength(31);
     // expect 30 per page
     // select 50 per page
     // expect 50 rows lenght

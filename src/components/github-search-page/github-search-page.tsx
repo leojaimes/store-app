@@ -26,8 +26,11 @@ export function GitHubSearchPage() {
       const res = await getRepositories({
         q: searchBy,
         page: 1,
-        per_page: 10,
+        per_page: 50,
       });
+      console.log(
+        `res.data.items.length ${JSON.stringify(res.data.items.length)}`
+      );
       setRepositoryItems(res.data.items);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

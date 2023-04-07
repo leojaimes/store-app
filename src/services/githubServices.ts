@@ -15,8 +15,11 @@ const baseUrl =
 export const getRepositories = async (
   searchParams: SarchRequestQueryParams
 ) => {
+  console.log(`baseUrl ${baseUrl}`);
+  console.log(`Search Params: ${JSON.stringify(searchParams)}`);
   const res = await axios.get<GithubResult>(`${baseUrl}/search/repositories`, {
     params: searchParams,
   });
+
   return res;
 };
