@@ -10,6 +10,7 @@ import { setupServer } from 'msw/node';
 import { OK_STATUS } from '../../consts/httpStatus';
 import { getExampleGithubResult } from '../../types/github/data/responses';
 import { GitHubSearchPage } from './github-search-page';
+import { handlerPaginated } from '../../__fixtures__/handlers';
 import {
   makeFakeResponse,
   getReposListBy,
@@ -23,6 +24,7 @@ const server = setupServer(
     return res(ctx.status(OK_STATUS), ctx.json(getExampleGithubResult));
   })
 );
+
 beforeEach(() => {
   render(<GitHubSearchPage />);
 });
@@ -237,23 +239,7 @@ describe('when the developer does a search and select 50 rows per page', () => {
   it('must fetch a new search and display 50 rows results on the table', async () => {
     // config mock server response
 
-    server.use(
-      rest.get(`/search/repositories`, (req, res, ctx) => {
-        // const q = req.url.searchParams.get('q');
-        const page = req.url.searchParams.get('page');
-        const perPage = req.url.searchParams.get('per_page');
-        const fakeResponse = makeFakeResponse();
-        const items = getReposPerPage({
-          currentPage: !Number.isNaN(Number(page)) ? Number(page) : 1,
-          perPage: !Number.isNaN(Number(perPage)) ? Number(perPage) : 30,
-        });
-        const response = { ...fakeResponse, items };
-        console.log(
-          `FROM TEST: response.items.length ${response.items.length}`
-        );
-        return res(ctx.status(OK_STATUS), ctx.json(response));
-      })
-    );
+    server.use(rest.get(`/search/repositories`, handlerPaginated));
 
     // click search
     searchClick();
@@ -265,10 +251,14 @@ describe('when the developer does a search and select 50 rows per page', () => {
     fireEvent.mouseDown(screen.getByLabelText(/rows per page/i));
     // // select 50 per page
     fireEvent.click(screen.getByRole('option', { name: '50' }));
-    await waitFor(() =>
-      expect(screen.getByRole('button', { name: /search/i })).not.toBeDisabled()
+    await waitFor(
+      () =>
+        expect(
+          screen.getByRole('button', { name: /search/i })
+        ).not.toBeDisabled(),
+      { timeout: 3000 }
     );
     // expect 50 rows lenght
-    expect(await screen.findAllByRole('row')).toHaveLength(51);
+    expect(screen.getAllByRole('row')).toHaveLength(51);
   });
 });

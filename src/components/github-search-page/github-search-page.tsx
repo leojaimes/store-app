@@ -14,6 +14,9 @@ import { Content } from './content';
 import { getRepositories } from '../../services/githubServices';
 import { RepositoryItem } from '../../types/github/index';
 
+import { GithubTable } from './content/GithubTable/GithubTable';
+
+const ROWS_PER_PAGE_DEFAULT = 30;
 export function GitHubSearchPage() {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isSearchApplied, setIsSearchApplied] = useState<boolean>(false);
@@ -21,7 +24,7 @@ export function GitHubSearchPage() {
 
   const [searchBy, setSearchBy] = useState<string>('');
 
-  const [rowsPerPage, setRowsPerPage] = useState<number>(30);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(ROWS_PER_PAGE_DEFAULT);
   const didMount = useRef(false);
 
   const onSearchClick = useCallback(async () => {
@@ -89,10 +92,24 @@ export function GitHubSearchPage() {
         {' '}
         <Content
           isSearchApplied={isSearchApplied}
-          repositoryItems={repositoryItems}
-          rowsPerPage={rowsPerPage}
-          setRowsPerPage={setRowsPerPage}
-        />
+          hasResults={repositoryItems.length > 0}
+        >
+          <GithubTable repositoryItems={repositoryItems} />
+          <TablePagination
+            component="div"
+            count={1}
+            rowsPerPage={rowsPerPage}
+            page={0}
+            onPageChange={() => {}}
+            onRowsPerPageChange={(e) => {
+              const newRowsPerPage = e.target.value;
+              console.log(`newRowsPerPage ${newRowsPerPage}`);
+              setRowsPerPage(Number(newRowsPerPage));
+              console.log(`RowsPerPage ${rowsPerPage}`);
+            }}
+            rowsPerPageOptions={[30, 50, 100]}
+          />
+        </Content>
       </Box>
     </Container>
   );

@@ -11,14 +11,17 @@ import {
   Link,
   TablePagination,
 } from '@mui/material';
+import React from 'react';
 import { RepositoryItem } from '../../../types/github/index';
 import { GithubTable } from './GithubTable/GithubTable';
 
 interface ContentProps {
   isSearchApplied: boolean;
-  repositoryItems: RepositoryItem[];
-  rowsPerPage: number;
-  setRowsPerPage: (rows: number) => void;
+  children: React.ReactNode;
+  hasResults: boolean;
+  // repositoryItems: RepositoryItem[];
+  // rowsPerPage: number;
+  // setRowsPerPage: (rows: number) => void;
 }
 
 interface TableStatusMessageBoxProps {
@@ -43,34 +46,15 @@ export function TableStatusMessageBox({
 
 export function Content({
   isSearchApplied,
-  repositoryItems,
-  rowsPerPage,
-  setRowsPerPage,
+  children,
+  hasResults = false,
 }: ContentProps) {
-  console.log(`Content repositoryItems.length: ${repositoryItems.length}`);
-  if (isSearchApplied && !!repositoryItems.length) {
-    return (
-      <>
-        <GithubTable repositoryItems={repositoryItems} />
-        <TablePagination
-          component="div"
-          count={1}
-          rowsPerPage={rowsPerPage}
-          page={0}
-          onPageChange={() => {}}
-          onRowsPerPageChange={(e) => {
-            const newRowsPerPage = e.target.value;
-            console.log(`newRowsPerPage ${newRowsPerPage}`);
-            setRowsPerPage(Number(newRowsPerPage));
-            console.log(`RowsPerPage ${rowsPerPage}`);
-          }}
-          rowsPerPageOptions={[30, 50, 100]}
-        />
-      </>
-    );
+  console.log(`Content repositoryItems.length: `);
+  if (isSearchApplied && hasResults) {
+    return <div>{children}</div>;
   }
 
-  if (isSearchApplied && !repositoryItems.length) {
+  if (isSearchApplied && !hasResults) {
     return (
       <TableStatusMessageBox>
         <Typography>Your search has no results</Typography>
