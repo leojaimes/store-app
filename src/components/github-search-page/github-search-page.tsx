@@ -17,6 +17,9 @@ import { RepositoryItem } from '../../types/github/index';
 import { GithubTable } from './content/GithubTable/GithubTable';
 
 const ROWS_PER_PAGE_DEFAULT = 30;
+const INITIAL_CURRENT_PAGE = 0;
+const INITIAL_TOTAL_COUNT = 0;
+
 export function GitHubSearchPage() {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isSearchApplied, setIsSearchApplied] = useState<boolean>(false);
@@ -26,18 +29,21 @@ export function GitHubSearchPage() {
   const didMount = useRef(false);
   const searchByInput = useRef<HTMLInputElement>(null);
 
-  const [page, setPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(INITIAL_CURRENT_PAGE);
+  const [totalCount, setTotalCount] = useState(INITIAL_TOTAL_COUNT);
+
   const onSearchClick = useCallback(async () => {
     setIsSearching(true);
     try {
       const res = await getRepositories({
         q: searchByInput.current?.value,
-        page,
+        page: currentPage,
         per_page: rowsPerPage,
       });
       console.log(
         `res.data.items.length ${JSON.stringify(res.data.items.length)}`
       );
+      setTotalCount(res.data.total_count);
       setRepositoryItems(res.data.items);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -47,7 +53,7 @@ export function GitHubSearchPage() {
 
     setIsSearchApplied(true);
     setIsSearching(false);
-  }, [rowsPerPage, page]);
+  }, [rowsPerPage, currentPage]);
 
   useEffect(() => {
     if (!didMount.current) {
@@ -56,6 +62,13 @@ export function GitHubSearchPage() {
     }
     onSearchClick();
   }, [onSearchClick]);
+
+  const handleOnPageChange = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
+    page: number
+  ) => {
+    setCurrentPage(page);
+  };
 
   return (
     <Container>
@@ -96,12 +109,10 @@ export function GitHubSearchPage() {
           <GithubTable repositoryItems={repositoryItems} />
           <TablePagination
             component="div"
-            count={1000}
+            count={totalCount}
             rowsPerPage={rowsPerPage}
-            page={0}
-            onPageChange={() => {
-              setPage((previousPage) => previousPage + 1);
-            }}
+            page={currentPage}
+            onPageChange={handleOnPageChange}
             onRowsPerPageChange={(e) => {
               const newRowsPerPage = e.target.value;
               console.log(`newRowsPerPage ${newRowsPerPage}`);
