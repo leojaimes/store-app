@@ -25,8 +25,8 @@ interface Props {
 }
 export function GithubTable({ repositoryItems }: Props) {
   return (
-    <TableContainer>
-      <Table>
+    <TableContainer sx={{ maxHeight: 440 }}>
+      <Table stickyHeader>
         <TableHead>
           <TableRow>
             {tableHeaders.map((name, index) => (

@@ -22,17 +22,17 @@ export function GitHubSearchPage() {
   const [isSearchApplied, setIsSearchApplied] = useState<boolean>(false);
   const [repositoryItems, setRepositoryItems] = useState<RepositoryItem[]>([]);
 
-  const [searchBy, setSearchBy] = useState<string>('');
-
   const [rowsPerPage, setRowsPerPage] = useState<number>(ROWS_PER_PAGE_DEFAULT);
   const didMount = useRef(false);
+  const searchByInput = useRef<HTMLInputElement>(null);
 
+  const [page, setPage] = useState(0);
   const onSearchClick = useCallback(async () => {
     setIsSearching(true);
     try {
       const res = await getRepositories({
-        q: searchBy,
-        page: 1,
+        q: searchByInput.current?.value,
+        page,
         per_page: rowsPerPage,
       });
       console.log(
@@ -47,7 +47,7 @@ export function GitHubSearchPage() {
 
     setIsSearchApplied(true);
     setIsSearching(false);
-  }, [rowsPerPage, searchBy]);
+  }, [rowsPerPage, page]);
 
   useEffect(() => {
     if (!didMount.current) {
@@ -72,8 +72,7 @@ export function GitHubSearchPage() {
             id="filterBy"
             label="filter by"
             name="fiter by"
-            value={searchBy}
-            onChange={(e) => setSearchBy(e.target.value)}
+            inputRef={searchByInput}
           />
         </Grid>
         <Grid item xs={12} md={3}>
@@ -97,10 +96,12 @@ export function GitHubSearchPage() {
           <GithubTable repositoryItems={repositoryItems} />
           <TablePagination
             component="div"
-            count={1}
+            count={1000}
             rowsPerPage={rowsPerPage}
             page={0}
-            onPageChange={() => {}}
+            onPageChange={() => {
+              setPage((previousPage) => previousPage + 1);
+            }}
             onRowsPerPageChange={(e) => {
               const newRowsPerPage = e.target.value;
               console.log(`newRowsPerPage ${newRowsPerPage}`);

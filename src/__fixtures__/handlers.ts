@@ -36,5 +36,6 @@ export const handlerPaginated = (
   });
   const response = { ...fakeResponse, items };
   console.log(`FROM TEST: response.items.length ${response.items.length}`);
+  console.log(`FROM TEST: response.items[0].name ${response.items[0].name}`);
   return res(ctx.status(OK_STATUS), ctx.json(response));
 };
