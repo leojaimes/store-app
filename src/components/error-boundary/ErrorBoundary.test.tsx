@@ -10,6 +10,36 @@ import { ErrorBoundary } from './ErrorBoundary';
 
 vitest.spyOn(console, 'error');
 
+const original = window.location;
+
+const reloadFn = () => {
+  window.location.reload();
+};
+
+beforeAll(() => {
+  Object.defineProperty(window, 'location', {
+    configurable: true,
+    value: { reload: vitest.fn() },
+  });
+});
+
+afterAll(() => {
+  Object.defineProperty(window, 'location', {
+    configurable: true,
+    value: original,
+  });
+});
+
+function ThrowError() {
+  throw new Error('ups');
+  return (
+    <>
+      <div />
+      <div />
+    </>
+  );
+}
+
 describe('when the component works without errors', () => {
   it('must render the component content', () => {
     render(
@@ -23,15 +53,6 @@ describe('when the component works without errors', () => {
 
 describe('when the component throws errors', () => {
   it('must render the message "There is an unexpeded error" and a reload button', () => {
-    function ThrowError() {
-      throw new Error('ups');
-      return (
-        <>
-          <div />
-          <div />
-        </>
-      );
-    }
     render(
       <ErrorBoundary>
         <ThrowError />
@@ -41,9 +62,20 @@ describe('when the component throws errors', () => {
     expect(
       screen.getByText(/There is an unexpected error/)
     ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /reload/i })).toBeInTheDocument();
   });
 });
 
 describe('when the user clicks on reload button', () => {
-  it('must reload the app', () => {});
+  it('must reload the app', () => {
+    render(
+      <ErrorBoundary>
+        <ThrowError />
+      </ErrorBoundary>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /reload/i }));
+    // expect(vitest.isMockFunction(window.location.reload)).toBe(true);
+    expect(window.location.reload).toHaveBeenCalledTimes(1);
+  });
 });

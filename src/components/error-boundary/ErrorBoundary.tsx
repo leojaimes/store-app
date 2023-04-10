@@ -20,7 +20,6 @@ export class ErrorBoundary extends React.Component<Props, MyState> {
 
   // eslint-disable-next-line class-methods-use-this
   handleReloadClick() {
-    // this.setState({ hasError: false });
     window.location.reload();
   }
 
