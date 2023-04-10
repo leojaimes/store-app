@@ -350,3 +350,9 @@ describe('when the developer does a search and then on next page button and then
     // expect(previousButton).not.toBeDisabled();
   });
 });
+
+describe('when there is an unexpected error from backend', () => {
+  it('must display an alert message error with the messsage from the service', async () => {
+    ///
+  });
+});

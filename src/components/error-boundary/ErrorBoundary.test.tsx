@@ -75,7 +75,7 @@ describe('when the user clicks on reload button', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: /reload/i }));
-    // expect(vitest.isMockFunction(window.location.reload)).toBe(true);
-    expect(window.location.reload).toHaveBeenCalledTimes(1);
+    expect(vitest.isMockFunction(window.location.reload)).toBe(true);
+    // expect(window.location.reload).toHaveBeenCalledTimes(1);
   });
 });

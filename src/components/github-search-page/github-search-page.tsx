@@ -48,6 +48,7 @@ export function GitHubSearchPage() {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         ///
+        // throw new Error('ups');
       }
     }
 
