@@ -7,6 +7,8 @@ import {
   Grid,
   Box,
   TablePagination,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import axios from 'axios';
 
@@ -32,6 +34,9 @@ export function GitHubSearchPage() {
   const [currentPage, setCurrentPage] = useState(INITIAL_CURRENT_PAGE);
   const [totalCount, setTotalCount] = useState(INITIAL_TOTAL_COUNT);
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState('');
+
   const onSearchClick = useCallback(async () => {
     setIsSearching(true);
     try {
@@ -48,7 +53,13 @@ export function GitHubSearchPage() {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         ///
-        // throw new Error('ups');
+        if (error.response.status === 422) {
+          //
+          const data = error.response.data as { message: string };
+          setIsOpen(true);
+          setSnackMessage(data.message);
+          return;
+        }
       }
     }
 
@@ -57,10 +68,13 @@ export function GitHubSearchPage() {
   }, [rowsPerPage, currentPage]);
 
   useEffect(() => {
+    console.log(`antes de entrar al if  didMount.current ${didMount.current}`);
     if (!didMount.current) {
       didMount.current = true;
+      console.log(`onSearchClick  didMount.current ${didMount.current}`);
       return;
     }
+    console.log('onSearchClick mounted');
     onSearchClick();
   }, [onSearchClick]);
 
@@ -124,6 +138,21 @@ export function GitHubSearchPage() {
           />
         </Content>
       </Box>
+
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        open={isOpen}
+        autoHideDuration={3000}
+        onClose={() => {
+          setSnackMessage('');
+          setIsOpen(false);
+        }}
+      >
+        <Alert severity="warning"> {snackMessage}</Alert>
+      </Snackbar>
     </Container>
   );
 }

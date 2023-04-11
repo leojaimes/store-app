@@ -10,11 +10,12 @@ import { setupServer } from 'msw/node';
 import { OK_STATUS } from '../../consts/httpStatus';
 import { getExampleGithubResult } from '../../types/github/data/responses';
 import { GitHubSearchPage } from './github-search-page';
-import { handlerPaginated } from '../../__fixtures__/handlers';
+import { handlerError, handlerPaginated } from '../../__fixtures__/handlers';
 import {
   makeFakeResponse,
   getReposListBy,
   getReposPerPage,
+  makeFakeError,
 } from '../../__fixtures__/repos';
 
 const url = '';
@@ -354,5 +355,14 @@ describe('when the developer does a search and then on next page button and then
 describe('when there is an unexpected error from backend', () => {
   it('must display an alert message error with the messsage from the service', async () => {
     ///
+    // configurar el server para que retorne errror
+    server.use(rest.get(`/search/repositories`, handlerError));
+    // click search
+    searchClick();
+
+    // expect message
+    expect(
+      await screen.findByRole('alert', { name: /validation failed/i })
+    ).toBeInTheDocument();
   });
 });

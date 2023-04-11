@@ -7,7 +7,7 @@ import {
   RestRequest,
   rest,
 } from 'msw';
-import { makeFakeResponse, getReposPerPage } from './repos';
+import { makeFakeResponse, getReposPerPage, makeFakeError } from './repos';
 import { OK_STATUS } from '../consts/httpStatus';
 // export const handlerPaginated = (req, res, ctx) =>
 //   res(
@@ -40,4 +40,17 @@ export const handlerPaginated = (
   console.log(`FROM TEST: response.items.length ${response.items.length}`);
   console.log(`FROM TEST: response.items[0].name ${response.items[0].name}`);
   return res(ctx.status(OK_STATUS), ctx.json(response));
+};
+
+///
+///
+export const handlerError = (
+  req: RestRequest<never, PathParams<string>>,
+  res: ResponseComposition<DefaultBodyType>,
+  ctx: RestContext
+) => {
+  // const q = req.url.searchParams.get('q');
+  const errorResponse = makeFakeError();
+
+  return res(ctx.status(422), ctx.json(errorResponse));
 };

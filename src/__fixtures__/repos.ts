@@ -1,3 +1,4 @@
+import { ErrorResonse } from '../types/github/errors/errors';
 import repos30Paginated from './repos-30-paginated.json';
 import repos50Paginated from './repos-50-paginated.json';
 
@@ -6,7 +7,9 @@ export const makeFakeResponse = ({ totalCount = 0 } = {}) => ({
   items: [],
 });
 
-export const makeFakeError = ({ message = 'Validation Failed' } = {}) => ({
+export const makeFakeError = ({
+  message = 'Validation Failed',
+} = {}): ErrorResonse => ({
   message,
 });
 
