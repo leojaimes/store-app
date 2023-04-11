@@ -80,8 +80,11 @@ export function GitHubSearchPage() {
   }, [rowsPerPage, currentPage]);
 
   const handleClickSearch = () => {
-    setCurrentPage(0);
-    onSearchClick();
+    if (currentPage === INITIAL_CURRENT_PAGE) {
+      onSearchClick();
+      return;
+    }
+    setCurrentPage(INITIAL_CURRENT_PAGE);
   };
 
   useEffect(() => {
