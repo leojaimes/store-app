@@ -354,6 +354,35 @@ describe('when the developer does a search and then on next page button and then
 
     // expect(previousButton).not.toBeDisabled();
   });
+  // AKI
+  it('must display the results of the first page', async () => {
+    server.use(rest.get(`/search/repositories`, handlerPaginated));
+
+    searchClick();
+
+    expect(await screen.findByRole('table')).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: /1-0/ })).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', { name: /next page/i })
+    ).not.toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: /next page/i }));
+    expect(screen.getByRole('button', { name: /search/i })).toBeDisabled();
+
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /search/i })).not.toBeDisabled()
+    );
+
+    expect(screen.getByRole('cell', { name: /2-0/ })).toBeInTheDocument();
+    fireEvent.mouseDown(screen.getByLabelText(/rows per page/i));
+    fireEvent.click(screen.getByRole('option', { name: '50' }));
+
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /search/i })).not.toBeDisabled()
+    );
+
+    expect(screen.getByRole('cell', { name: /1-0/ })).toBeInTheDocument();
+  });
 });
 
 describe('when there is an unprocessable entry error from backend', () => {
@@ -389,5 +418,36 @@ describe('when there is an unexpected error from backend', () => {
 
     // expect message
     expect(await screen.findByText(/unexpected error/i)).toBeVisible();
+  });
+});
+
+describe('when the developer does a search and clicks search again  ', () => {
+  it('must display the results of the first page', async () => {
+    server.use(rest.get(`/search/repositories`, handlerPaginated));
+
+    searchClick();
+
+    expect(await screen.findByRole('table')).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: /1-0/ })).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', { name: /next page/i })
+    ).not.toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: /next page/i }));
+    expect(screen.getByRole('button', { name: /search/i })).toBeDisabled();
+
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /search/i })).not.toBeDisabled()
+    );
+
+    expect(screen.getByRole('cell', { name: /2-0/ })).toBeInTheDocument();
+
+    searchClick();
+    expect(screen.getByRole('button', { name: /search/i })).toBeDisabled();
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /search/i })).not.toBeDisabled()
+    );
+
+    expect(screen.getByRole('cell', { name: /1-0/ })).toBeInTheDocument();
   });
 });

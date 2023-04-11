@@ -79,6 +79,11 @@ export function GitHubSearchPage() {
     }
   }, [rowsPerPage, currentPage]);
 
+  const handleClickSearch = () => {
+    setCurrentPage(0);
+    onSearchClick();
+  };
+
   useEffect(() => {
     console.log(`antes de entrar al if  didMount.current ${didMount.current}`);
     if (!didMount.current) {
@@ -115,7 +120,7 @@ export function GitHubSearchPage() {
         </Grid>
         <Grid item xs={12} md={3}>
           <Button
-            onClick={onSearchClick}
+            onClick={handleClickSearch}
             disabled={isSearching}
             fullWidth
             color="primary"
@@ -142,6 +147,7 @@ export function GitHubSearchPage() {
               const newRowsPerPage = e.target.value;
               console.log(`newRowsPerPage ${newRowsPerPage}`);
               setRowsPerPage(Number(newRowsPerPage));
+              setCurrentPage(0);
               console.log(`RowsPerPage ${rowsPerPage}`);
             }}
             rowsPerPageOptions={[30, 50, 100]}
