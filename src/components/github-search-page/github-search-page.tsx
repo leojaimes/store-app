@@ -17,6 +17,10 @@ import { getRepositories } from '../../services/githubServices';
 import { RepositoryItem } from '../../types/github/index';
 
 import { GithubTable } from './content/GithubTable/GithubTable';
+import {
+  BAD_REQUEST_STATUS,
+  ERROR_SERVER_STATUS,
+} from '../../consts/httpStatus';
 
 const ROWS_PER_PAGE_DEFAULT = 30;
 const INITIAL_CURRENT_PAGE = 0;
@@ -53,9 +57,17 @@ export function GitHubSearchPage() {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         ///
-        if (error.response.status === 422) {
+        if (error.response.status === BAD_REQUEST_STATUS) {
           //
           const data = error.response.data as { message: string };
+          setIsOpen(true);
+          setSnackMessage(data.message);
+          return;
+        }
+
+        if (error.response.status === ERROR_SERVER_STATUS) {
+          const data = error.response.data as { message: string };
+
           setIsOpen(true);
           setSnackMessage(data.message);
           return;

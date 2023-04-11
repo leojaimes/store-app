@@ -10,7 +10,11 @@ import { setupServer } from 'msw/node';
 import { OK_STATUS } from '../../consts/httpStatus';
 import { getExampleGithubResult } from '../../types/github/data/responses';
 import { GitHubSearchPage } from './github-search-page';
-import { handlerError, handlerPaginated } from '../../__fixtures__/handlers';
+import {
+  handlerError,
+  handlerPaginated,
+  handlerUnexpectedError,
+} from '../../__fixtures__/handlers';
 import {
   makeFakeResponse,
   getReposListBy,
@@ -352,22 +356,38 @@ describe('when the developer does a search and then on next page button and then
   });
 });
 
-describe('when there is an unexpected error from backend', () => {
+describe('when there is an unprocessable entry error from backend', () => {
   it('must display an alert message error with the messsage from the service', async () => {
+    expect(screen.queryByText(/validation failed/i)).not.toBeInTheDocument();
     ///
     // configurar el server para que retorne errror
     server.use(rest.get(`/search/repositories`, handlerError));
     // click search
     searchClick();
 
-    await waitFor(
-      () =>
-        expect(
-          screen.getByRole('button', { name: /search/i })
-        ).not.toBeDisabled(),
-      { timeout: 3000 }
-    );
     // expect message
     expect(await screen.findByText(/validation failed/i)).toBeVisible();
+  });
+});
+
+describe('when there is an unexpected error from backend', () => {
+  it('must display an alert message error with the messsage from the service', async () => {
+    expect(screen.queryByText(/unexpected error/i)).not.toBeInTheDocument();
+    ///
+    // configurar el server para que retorne errror
+    server.use(
+      rest.get(`/search/repositories`, (req, res, ctx) => {
+        const message = {
+          message: 'unexpected error',
+        };
+        const errorResponse = makeFakeError(message);
+        return res(ctx.status(500), ctx.json(errorResponse));
+      })
+    );
+    // click search
+    searchClick();
+
+    // expect message
+    expect(await screen.findByText(/unexpected error/i)).toBeVisible();
   });
 });

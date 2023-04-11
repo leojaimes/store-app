@@ -1,14 +1,20 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {
   DefaultBodyType,
+  MockedResponse,
   PathParams,
   ResponseComposition,
+  ResponseTransformer,
   RestContext,
   RestRequest,
   rest,
 } from 'msw';
 import { makeFakeResponse, getReposPerPage, makeFakeError } from './repos';
-import { OK_STATUS } from '../consts/httpStatus';
+import {
+  OK_STATUS,
+  BAD_REQUEST_STATUS,
+  ERROR_SERVER_STATUS,
+} from '../consts/httpStatus';
 // export const handlerPaginated = (req, res, ctx) =>
 //   res(
 //     ctx.status(OK_STATUS),
@@ -52,5 +58,16 @@ export const handlerError = (
   // const q = req.url.searchParams.get('q');
   const errorResponse = makeFakeError();
 
-  return res(ctx.status(422), ctx.json(errorResponse));
+  return res(ctx.status(BAD_REQUEST_STATUS), ctx.json(errorResponse));
+};
+
+export const handlerUnexpectedError = (
+  req: RestRequest<never, PathParams<string>>,
+  res: ResponseComposition<DefaultBodyType>,
+  ctx: RestContext
+) => {
+  // const q = req.url.searchParams.get('q');
+  const errorResponse = makeFakeError();
+
+  return res(ctx.status(ERROR_SERVER_STATUS), ctx.json(errorResponse));
 };
