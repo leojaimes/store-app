@@ -360,9 +360,14 @@ describe('when there is an unexpected error from backend', () => {
     // click search
     searchClick();
 
+    await waitFor(
+      () =>
+        expect(
+          screen.getByRole('button', { name: /search/i })
+        ).not.toBeDisabled(),
+      { timeout: 3000 }
+    );
     // expect message
-    expect(
-      await screen.findByRole('alert', { name: /validation failed/i })
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/validation failed/i)).toBeVisible();
   });
 });

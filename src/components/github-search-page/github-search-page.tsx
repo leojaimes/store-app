@@ -61,20 +61,18 @@ export function GitHubSearchPage() {
           return;
         }
       }
+    } finally {
+      setIsSearchApplied(true);
+      setIsSearching(false);
     }
-
-    setIsSearchApplied(true);
-    setIsSearching(false);
   }, [rowsPerPage, currentPage]);
 
   useEffect(() => {
     console.log(`antes de entrar al if  didMount.current ${didMount.current}`);
     if (!didMount.current) {
       didMount.current = true;
-      console.log(`onSearchClick  didMount.current ${didMount.current}`);
       return;
     }
-    console.log('onSearchClick mounted');
     onSearchClick();
   }, [onSearchClick]);
 
@@ -150,9 +148,8 @@ export function GitHubSearchPage() {
           setSnackMessage('');
           setIsOpen(false);
         }}
-      >
-        <Alert severity="warning"> {snackMessage}</Alert>
-      </Snackbar>
+        message={snackMessage}
+      />
     </Container>
   );
 }
