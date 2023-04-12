@@ -10,3 +10,7 @@ export function Form() {
     </Container>
   );
 }
+
+export const form = () => {
+  return <div>form</div>;
+};
