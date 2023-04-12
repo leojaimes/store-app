@@ -2,10 +2,16 @@ import { Button, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { form } from '../../../form/form';
 
-interface FormValueFields {
+interface FormFields {
   email: string;
   password: string;
 }
+
+interface FormValueFields {
+  email: { value: string };
+  password: { value: string };
+}
+
 export function LoginPage() {
   const [emailHelperText, setEmailHelperText] = useState<string | null>(null);
 
@@ -21,11 +27,10 @@ export function LoginPage() {
       FormValueFields;
     const { email, password } = formElements;
 
-    console.log(`email ${email}`);
-    if (email.trim().length === 0) {
+    if (email.value.trim().length === 0) {
       setEmailHelperText('The email is required');
     }
-    if (password.trim().length === 0) {
+    if (password.value.trim().length === 0) {
       setPasswordHelperText('The password is required');
     }
 
