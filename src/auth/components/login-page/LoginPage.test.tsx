@@ -35,7 +35,7 @@ describe('user leaves empty fields and clicks the submit button', () => {
 describe('when user fills the  fields and clicks the submit button', () => {
   it('must not display required messages', () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'lalla' },
+      target: { value: 'leo@gmail.com' },
     });
     fireEvent.change(screen.getByLabelText(/password/i), {
       target: { value: 'pass123' },
@@ -48,5 +48,16 @@ describe('when user fills the  fields and clicks the submit button', () => {
     expect(
       screen.queryByText(/the password is required/i)
     ).not.toBeInTheDocument();
+  });
+});
+
+describe('when user fills and blur the email input with invalid email', () => {
+  it('must not display a validation message the email is invalid. Example: leo@gmail.com', () => {
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'invalid.email' },
+    });
+    fireEvent.blur(screen.getByLabelText(/email/i));
+
+    expect(screen.queryByText(/the email is invalid/i)).toBeInTheDocument();
   });
 });

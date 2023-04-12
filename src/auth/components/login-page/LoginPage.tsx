@@ -1,6 +1,5 @@
 import { Button, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import { form } from '../../../form/form';
 
 interface FormFields {
   email: string;
@@ -18,6 +17,10 @@ export function LoginPage() {
   const [passwordHelperText, setPasswordHelperText] = useState<string | null>(
     null
   );
+  const [formValues, setFormValues] = useState<FormFields>({
+    email: '',
+    password: '',
+  });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -36,6 +39,25 @@ export function LoginPage() {
 
     // setEmailHelperText(null);
   };
+  const handleChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    ///
+    const {
+      target: { value, name },
+    } = event;
+
+    setFormValues({ ...formValues, [name]: value });
+  };
+  const handleBlur = () => {
+    //
+    const regex =
+      /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/gm;
+
+    if (!regex.test(formValues.email)) {
+      setEmailHelperText('the email is invalid');
+    }
+  };
   return (
     <>
       <Typography variant="h1">Login Page</Typography>
@@ -45,6 +67,9 @@ export function LoginPage() {
           label="email"
           name="email"
           helperText={emailHelperText}
+          onChange={handleChange}
+          value={formValues.email}
+          onBlur={handleBlur}
         />
         <TextField
           id="password"
@@ -52,6 +77,8 @@ export function LoginPage() {
           name="password"
           type="password"
           helperText={passwordHelperText}
+          onChange={handleChange}
+          value={formValues.password}
         />
         <Button type="submit">Send</Button>
       </form>
