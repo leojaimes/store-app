@@ -1,8 +1,9 @@
 import './App.css';
+import { LoginPage } from './auth/components/login-page/LoginPage';
 import { Form } from './form/form';
 
 function App() {
-  return <Form />;
+  return <LoginPage />;
 }
 
 export default App;

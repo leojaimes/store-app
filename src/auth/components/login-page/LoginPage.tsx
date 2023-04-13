@@ -10,7 +10,15 @@ interface FormValueFields {
   email: { value: string };
   password: { value: string };
 }
+const isValidEmail = (evaluateValue: string): boolean => {
+  const regex =
+    /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/gm;
 
+  if (!regex.test(evaluateValue)) {
+    return false;
+  }
+  return true;
+};
 export function LoginPage() {
   const [emailHelperText, setEmailHelperText] = useState<string | null>(null);
 
@@ -48,14 +56,20 @@ export function LoginPage() {
     } = event;
 
     setFormValues({ ...formValues, [name]: value });
+
+    if (isValidEmail(formValues.email)) {
+      console.log('pase por aki 1');
+      setEmailHelperText(null);
+    }
   };
   const handleBlur = () => {
-    //
-    const regex =
-      /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/gm;
-
-    if (!regex.test(formValues.email)) {
+    console.log(
+      `${formValues.email} invalid: ${!isValidEmail(formValues.email)}`
+    );
+    if (!isValidEmail(formValues.email)) {
       setEmailHelperText('the email is invalid');
+    } else {
+      setEmailHelperText(null);
     }
   };
   return (

@@ -52,6 +52,17 @@ describe('when user fills the  fields and clicks the submit button', () => {
 });
 
 describe('when user fills and blur the email input with invalid email', () => {
+  it('must display a validation message the email is invalid. Example: leo@gmail.com', () => {
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'invalid.email' },
+    });
+    fireEvent.blur(screen.getByLabelText(/email/i));
+
+    expect(screen.queryByText(/the email is invalid/i)).toBeInTheDocument();
+  });
+});
+
+describe('when user fills and blur the email input with invalid email, and then focus and change with a valid email', () => {
   it('must not display a validation message the email is invalid. Example: leo@gmail.com', () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'invalid.email' },
@@ -59,5 +70,11 @@ describe('when user fills and blur the email input with invalid email', () => {
     fireEvent.blur(screen.getByLabelText(/email/i));
 
     expect(screen.queryByText(/the email is invalid/i)).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'valid@gmail.com' },
+    });
+    fireEvent.blur(screen.getByLabelText(/email/i));
+    expect(screen.queryByText(/the email is invalid/i)).not.toBeInTheDocument();
   });
 });
