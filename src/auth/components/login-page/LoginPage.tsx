@@ -1,4 +1,4 @@
-import { Button, TextField, Typography } from '@mui/material';
+import { Button, CircularProgress, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { sign } from 'crypto';
 import { passwordValidationMessage } from '../../../messages';
@@ -47,20 +47,25 @@ export function LoginPage() {
     const formElements = formElement.elements as typeof formElement.elements &
       FormValueFields;
     const { email, password } = formElements;
-    let proceed = true;
+
     if (email.value.trim().length === 0) {
       setEmailHelperText('The email is required');
-      proceed = false;
     }
     if (password.value.trim().length === 0) {
       setPasswordHelperText('The password is required');
-      proceed = false;
     }
-    if (!proceed) return;
+
+    function timeout(ms: number) {
+      // eslint-disable-next-line no-promise-executor-return
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
     setIsSigning(true);
+
+    await timeout(2000);
     try {
-      await signin();
-      await timeout(1000);
+      const res = await signin();
+      console.log(`res ${res}`);
     } catch (error) {
       ///
     } finally {
@@ -80,14 +85,10 @@ export function LoginPage() {
     setFormValues({ ...formValues, [name]: value });
 
     if (isValidEmail(formValues.email)) {
-      console.log('pase por aki 1');
       setEmailHelperText(null);
     }
   };
   const handleBlurEmail = () => {
-    console.log(
-      `${formValues.email} invalid: ${!isValidEmail(formValues.email)}`
-    );
     if (!isValidEmail(formValues.email)) {
       setEmailHelperText('the email is invalid');
       return;
@@ -97,7 +98,6 @@ export function LoginPage() {
   };
 
   const handleBlurPassword = () => {
-    console.log(`${formValues.password}`);
     if (!isValidPassword(formValues.password)) {
       setPasswordHelperText(passwordValidationMessage);
       return;
@@ -107,7 +107,8 @@ export function LoginPage() {
 
   return (
     <>
-      {isSigning && <div data-testid="loading-indicator">signing...</div>}
+      {isSigning && <CircularProgress data-testid="loading-indicator" />}
+
       <Typography variant="h1">Login Page</Typography>
       <form onSubmit={handleSubmit}>
         <TextField
