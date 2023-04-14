@@ -63,7 +63,7 @@ export function LoginPage() {
 
     await timeout(2000);
     try {
-      const res = await signin();
+      const res = await signin({ email, password });
       console.log(`res ${JSON.stringify(res.data)}`);
     } catch (error) {
       console.log(error);

@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-export const signin = async () => {
-  const res = await axios.post('/login');
+interface SignInRequestBody {
+  email: string;
+  password: string;
+}
+export const signin = async (signinRequestBody: SignInRequestBody) => {
+  const res = await axios.post('/login', signinRequestBody);
   return res;
 };
