@@ -1,6 +1,8 @@
 import { Button, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
+import { sign } from 'crypto';
 import { passwordValidationMessage } from '../../../messages';
+import { signin } from '../../../api/request';
 
 interface FormFields {
   email: string;
@@ -36,6 +38,7 @@ export function LoginPage() {
     email: '',
     password: '',
   });
+  const [isSigning, setIsSigning] = useState<boolean>(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -53,7 +56,15 @@ export function LoginPage() {
       setPasswordHelperText('The password is required');
       proceed = false;
     }
-    // if (!proceed) return;
+    if (!proceed) return;
+    setIsSigning(true);
+    try {
+      await signin();
+    } catch (error) {
+      ///
+    } finally {
+      setIsSigning(false);
+    }
 
     // setEmailHelperText(null);
   };
@@ -116,7 +127,9 @@ export function LoginPage() {
           onBlur={handleBlurPassword}
           value={formValues.password}
         />
-        <Button type="submit">Send</Button>
+        <Button type="submit" disabled={isSigning}>
+          Send
+        </Button>
       </form>
     </>
   );

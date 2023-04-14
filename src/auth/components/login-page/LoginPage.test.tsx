@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { LoginPage } from './LoginPage';
@@ -19,7 +19,10 @@ afterEach(() => {
 afterAll(() => {
   server.close();
 });
+
+const EmailInput = () => screen.getByLabelText(/email/i);
 const PasswordInput = () => screen.getByLabelText(/password/i);
+const SendButton = () => screen.getByRole('button', { name: /send/i });
 
 describe('when loging page is mounted', () => {
   it('must display login title', () => {
@@ -164,6 +167,21 @@ describe('when the user fills and blur the password input with a invalid value a
 });
 
 describe('when the user submit the login form with valid data', () => {
-  it('must disable the submit button while the form page is fetching the data', async () => {});
+  it('must disable the submit button while the form page is fetching the data', async () => {
+    const sendButton = SendButton();
+    const emailTextField = EmailInput();
+    const passwordTextField = PasswordInput();
+    const validEmail = 'valid@gmail.com';
+    const validPassword = 'asdfghjA1#';
+    fireEvent.change(emailTextField, { target: { value: validEmail } });
+    fireEvent.change(passwordTextField, {
+      target: { value: validPassword },
+    });
+
+    fireEvent.click(sendButton);
+    await waitFor(() => expect(sendButton).toBeDisabled());
+
+    // expect(sendButton).not.toBeDisabled();
+  });
   it('must be a loading indicator at the top of the form while it is fetching', async () => {});
 });
