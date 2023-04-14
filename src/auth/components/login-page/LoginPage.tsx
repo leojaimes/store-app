@@ -1,5 +1,6 @@
 import { Button, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
+import { passwordValidationMessage } from '../../../messages';
 
 interface FormFields {
   email: string;
@@ -18,6 +19,12 @@ const isValidEmail = (evaluateValue: string): boolean => {
     return false;
   }
   return true;
+};
+
+const isValidPassword = (password: string): boolean => {
+  const passwordRulesRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/; // /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
+  return passwordRulesRegex.test(password);
 };
 export function LoginPage() {
   const [emailHelperText, setEmailHelperText] = useState<string | null>(null);
@@ -62,16 +69,27 @@ export function LoginPage() {
       setEmailHelperText(null);
     }
   };
-  const handleBlur = () => {
+  const handleBlurEmail = () => {
     console.log(
       `${formValues.email} invalid: ${!isValidEmail(formValues.email)}`
     );
     if (!isValidEmail(formValues.email)) {
       setEmailHelperText('the email is invalid');
-    } else {
-      setEmailHelperText(null);
+      return;
     }
+
+    setEmailHelperText(null);
   };
+
+  const handleBlurPassword = () => {
+    console.log(`${formValues.password}`);
+    if (!isValidPassword(formValues.password)) {
+      setPasswordHelperText(passwordValidationMessage);
+      return;
+    }
+    setPasswordHelperText(null);
+  };
+
   return (
     <>
       <Typography variant="h1">Login Page</Typography>
@@ -83,7 +101,7 @@ export function LoginPage() {
           helperText={emailHelperText}
           onChange={handleChange}
           value={formValues.email}
-          onBlur={handleBlur}
+          onBlur={handleBlurEmail}
         />
         <TextField
           id="password"
@@ -92,6 +110,7 @@ export function LoginPage() {
           type="password"
           helperText={passwordHelperText}
           onChange={handleChange}
+          onBlur={handleBlurPassword}
           value={formValues.password}
         />
         <Button type="submit">Send</Button>
