@@ -60,6 +60,7 @@ export function LoginPage() {
     setIsSigning(true);
     try {
       await signin();
+      await timeout(1000);
     } catch (error) {
       ///
     } finally {
@@ -106,6 +107,7 @@ export function LoginPage() {
 
   return (
     <>
+      {isSigning && <div data-testid="loading-indicator">signing...</div>}
       <Typography variant="h1">Login Page</Typography>
       <form onSubmit={handleSubmit}>
         <TextField

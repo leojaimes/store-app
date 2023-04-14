@@ -24,6 +24,17 @@ const EmailInput = () => screen.getByLabelText(/email/i);
 const PasswordInput = () => screen.getByLabelText(/password/i);
 const SendButton = () => screen.getByRole('button', { name: /send/i });
 
+const fillValidSignInForm = () => {
+  const emailTextField = EmailInput();
+  const passwordTextField = PasswordInput();
+  const validEmail = 'valid@gmail.com';
+  const validPassword = 'asdfghjA1#';
+  fireEvent.change(emailTextField, { target: { value: validEmail } });
+  fireEvent.change(passwordTextField, {
+    target: { value: validPassword },
+  });
+};
+
 describe('when loging page is mounted', () => {
   it('must display login title', () => {
     expect(
@@ -177,11 +188,17 @@ describe('when the user submit the login form with valid data', () => {
     fireEvent.change(passwordTextField, {
       target: { value: validPassword },
     });
-
     fireEvent.click(sendButton);
     await waitFor(() => expect(sendButton).toBeDisabled());
 
-    // expect(sendButton).not.toBeDisabled();
+    expect(sendButton).not.toBeDisabled();
   });
-  it('must be a loading indicator at the top of the form while it is fetching', async () => {});
+  it('must be a loading indicator at the top of the form while it is fetching', async () => {
+    const sendButton = SendButton();
+    fillValidSignInForm();
+    const loadingIndicator = screen.findByTestId('loading-indicator');
+    fireEvent.click(sendButton);
+    await waitFor(() => expect(loadingIndicator).toBeInTheDocument());
+    // expect(loadingIndicator).toBeInTheDocument();
+  });
 });
