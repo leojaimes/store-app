@@ -37,20 +37,23 @@ export function LoginPage() {
     password: '',
   });
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formElement = event.currentTarget;
     const formElements = formElement.elements as typeof formElement.elements &
       FormValueFields;
     const { email, password } = formElements;
-
+    let proceed = true;
     if (email.value.trim().length === 0) {
       setEmailHelperText('The email is required');
+      proceed = false;
     }
     if (password.value.trim().length === 0) {
       setPasswordHelperText('The password is required');
+      proceed = false;
     }
+    // if (!proceed) return;
 
     // setEmailHelperText(null);
   };

@@ -1,11 +1,24 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
 import { LoginPage } from './LoginPage';
 import { passwordValidationMessage } from '../../../messages';
+import { handlers } from '../../../mocks/handlers';
 
 beforeEach(() => {
   render(<LoginPage />);
 });
 
+const server = setupServer(...handlers);
+beforeAll(() => {
+  server.listen();
+});
+afterEach(() => {
+  server.resetHandlers();
+});
+afterAll(() => {
+  server.close();
+});
 const PasswordInput = () => screen.getByLabelText(/password/i);
 
 describe('when loging page is mounted', () => {
@@ -148,4 +161,9 @@ describe('when the user fills and blur the password input with a invalid value a
       screen.queryByText(passwordValidationMessage)
     ).not.toBeInTheDocument();
   });
+});
+
+describe('when the user submit the login form with valid data', () => {
+  it('must disable the submit button while the form page is fetching the data', async () => {});
+  it('must be a loading indicator at the top of the form while it is fetching', async () => {});
 });
