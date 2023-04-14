@@ -14,7 +14,13 @@ const loginRequest = async (
   ctx: RestContext
 ) => {
   sessionStorage.setItem('is-authenticated', 'true');
-  return res(ctx.status(200));
+
+  return res(
+    ctx.status(200),
+    ctx.json({
+      message: 'ok',
+    })
+  );
 };
 
 export const handlers = [rest.post('/login', loginRequest)];

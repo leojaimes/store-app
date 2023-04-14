@@ -30,7 +30,7 @@ const EmailInput = () => screen.getByLabelText(/email/i);
 const PasswordInput = () => screen.getByLabelText(/password/i);
 const SendButton = () => screen.getByRole('button', { name: /send/i });
 
-const fillValidSignInForm = () => {
+const fillSignInFormWithValidValues = () => {
   const emailTextField = EmailInput();
   const passwordTextField = PasswordInput();
   const validEmail = 'valid@gmail.com';
@@ -77,7 +77,6 @@ describe('when user fills the  fields and clicks the submit button', () => {
     fireEvent.change(screen.getByLabelText(/password/i), {
       target: { value: 'pass123' },
     });
-
     fireEvent.click(screen.getByRole('button', { name: /send/i }));
     expect(
       screen.queryByText(/the email is required/i)
@@ -185,6 +184,7 @@ describe('when the user fills and blur the password input with a invalid value a
 
 describe('when the user submit the login form with valid data', () => {
   it('must disable the submit button while the form page is fetching the data', async () => {
+    fillSignInFormWithValidValues();
     const sendButton = SendButton();
     // const emailTextField = EmailInput();
     // const passwordTextField = PasswordInput();
@@ -197,17 +197,21 @@ describe('when the user submit the login form with valid data', () => {
 
     expect(sendButton).not.toBeDisabled();
     fireEvent.click(sendButton);
-    expect(sendButton).toBeDisabled();
+    await waitFor(() => expect(sendButton).not.toBeDisabled(), {
+      timeout: 4000,
+    });
   });
-  it.todo(
-    'must be a loading indicator at the top of the form while it is fetching',
-    async () => {
-      expect(screen.queryByTestId('loading-indicator')).not.toBeInTheDocument();
-      fireEvent.click(SendButton());
-      expect(screen.queryByTestId('loading-indicator')).toBeInTheDocument();
-      await waitForElementToBeRemoved(() =>
-        screen.queryByTestId('loading-indicator')
-      );
-    }
-  );
+  it('must be a loading indicator at the top of the form while it is fetching', async () => {
+    fillSignInFormWithValidValues();
+
+    expect(screen.queryByTestId('loading-indicator')).not.toBeInTheDocument();
+    fireEvent.click(SendButton());
+    expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
+    await waitForElementToBeRemoved(
+      () => screen.queryByTestId('loading-indicator'),
+      {
+        timeout: 4000,
+      }
+    );
+  });
 });

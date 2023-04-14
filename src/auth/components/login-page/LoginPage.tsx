@@ -42,16 +42,15 @@ export function LoginPage() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    // const formElement = event.currentTarget;
+    // const formElements = formElement.elements as typeof formElement.elements &
+    //   FormValueFields;
+    const { email, password } = formValues;
 
-    const formElement = event.currentTarget;
-    const formElements = formElement.elements as typeof formElement.elements &
-      FormValueFields;
-    const { email, password } = formElements;
-
-    if (email.value.trim().length === 0) {
+    if (email.trim().length === 0) {
       setEmailHelperText('The email is required');
     }
-    if (password.value.trim().length === 0) {
+    if (password.trim().length === 0) {
       setPasswordHelperText('The password is required');
     }
 
@@ -65,9 +64,9 @@ export function LoginPage() {
     await timeout(2000);
     try {
       const res = await signin();
-      console.log(`res ${res}`);
+      console.log(`res ${JSON.stringify(res.data)}`);
     } catch (error) {
-      ///
+      console.log(error);
     } finally {
       setIsSigning(false);
     }
