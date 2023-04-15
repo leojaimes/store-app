@@ -9,7 +9,11 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { LoginPage } from './LoginPage';
 import { passwordValidationMessage } from '../../../messages';
-import { handlers } from '../../../mocks/handlers';
+import { SignInPostRequestBody, handlers } from '../../../mocks/handlers';
+import {
+  BAD_CREDENTIALS_STATUS,
+  ERROR_SERVER_STATUS,
+} from '../../../const/httpStatus';
 
 beforeEach(() => {
   render(<LoginPage />);
@@ -30,11 +34,14 @@ const EmailInput = () => screen.getByLabelText(/email/i);
 const PasswordInput = () => screen.getByLabelText(/password/i);
 const SendButton = () => screen.getByRole('button', { name: /send/i });
 
-const fillSignInFormWithValidValues = () => {
+const fillSignInForm = (
+  email = 'valid@gmail.com',
+  password = 'valid@gmail.com'
+) => {
   const emailTextField = EmailInput();
   const passwordTextField = PasswordInput();
-  const validEmail = 'valid@gmail.com';
-  const validPassword = 'asdfghjA1#';
+  const validEmail = email;
+  const validPassword = password;
   fireEvent.change(emailTextField, { target: { value: validEmail } });
   fireEvent.change(passwordTextField, {
     target: { value: validPassword },
@@ -184,7 +191,7 @@ describe('when the user fills and blur the password input with a invalid value a
 
 describe('when the user submit the login form with valid data', () => {
   it('must disable the submit button while the form page is fetching the data', async () => {
-    fillSignInFormWithValidValues();
+    fillSignInForm();
     const sendButton = SendButton();
     // const emailTextField = EmailInput();
     // const passwordTextField = PasswordInput();
@@ -200,7 +207,7 @@ describe('when the user submit the login form with valid data', () => {
     await waitFor(() => expect(sendButton).not.toBeDisabled());
   });
   it('must be a loading indicator at the top of the form while it is fetching', async () => {
-    fillSignInFormWithValidValues();
+    fillSignInForm();
 
     expect(screen.queryByTestId('loading-indicator')).not.toBeInTheDocument();
     fireEvent.click(SendButton());
@@ -217,7 +224,7 @@ describe('when the user submit the login form with valid data and there is an un
     server.use(
       rest.post('/login', async (req, res, ctx) => {
         return res(
-          ctx.status(500),
+          ctx.status(ERROR_SERVER_STATUS),
           ctx.json({
             message: 'Unexpected error, please try again',
           })
@@ -228,7 +235,7 @@ describe('when the user submit the login form with valid data and there is an un
     expect(
       screen.queryByText(/unexpected error, please try again/i)
     ).not.toBeInTheDocument();
-    fillSignInFormWithValidValues();
+    fillSignInForm();
     fireEvent.click(SendButton());
 
     expect(
@@ -240,10 +247,43 @@ describe('when the user submit the login form with valid data and there is an un
 });
 
 describe('when the user submit the login form with valid data and there is and invalid credentials error', () => {
-  it.todo(
-    'must display the error message: "The email or password are not correct" from the api',
-    async () => {
-      //
-    }
-  );
+  it('must display the error message: "The email or password are not correct" from the api', async () => {
+    //
+    const unregistredEmail = 'unregistred@email.com';
+    const unregistredPassword = 'unregistred#1A';
+
+    server.use(
+      rest.post<SignInPostRequestBody>('/login', async (req, res, ctx) => {
+        const { email, password } = req.body;
+        if (email === unregistredEmail && password === unregistredPassword) {
+          return res(
+            ctx.status(BAD_CREDENTIALS_STATUS),
+            ctx.json({
+              message: 'The email or password are not correct',
+            })
+          );
+        }
+
+        return res(
+          ctx.status(200),
+          ctx.json({
+            message: 'ok',
+            email,
+            password,
+          })
+        );
+      })
+    );
+
+    expect(
+      screen.queryByText(/The email or password are not correct/i)
+    ).not.toBeInTheDocument();
+    fillSignInForm(unregistredEmail, unregistredPassword);
+
+    fireEvent.click(SendButton());
+
+    expect(
+      await screen.findByText(/The email or password are not correct/i)
+    ).toBeInTheDocument();
+  });
 });

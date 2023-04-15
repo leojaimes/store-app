@@ -1,13 +1,15 @@
 import {
   Button,
   CircularProgress,
+  CssBaseline,
   Snackbar,
   TextField,
   Typography,
+  Container,
 } from '@mui/material';
 import React, { useState } from 'react';
-import { sign } from 'crypto';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
+
 import { passwordValidationMessage } from '../../../messages';
 import { signin } from '../../../api/request';
 
@@ -126,7 +128,8 @@ export function LoginPage() {
   };
 
   return (
-    <>
+    <Container>
+      <CssBaseline />
       {isSigning && <CircularProgress data-testid="loading-indicator" />}
       <Snackbar
         anchorOrigin={{
@@ -165,6 +168,6 @@ export function LoginPage() {
           Send
         </Button>
       </form>
-    </>
+    </Container>
   );
 }

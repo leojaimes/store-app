@@ -8,7 +8,7 @@ import {
   rest,
 } from 'msw';
 
-interface SignInPostRequestBody {
+export interface SignInPostRequestBody {
   email: string;
   password: string;
 }
