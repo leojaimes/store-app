@@ -164,6 +164,8 @@ export function LoginPage() {
             value={formValues.email}
             onBlur={handleBlurEmail}
             fullWidth
+            variant="outlined"
+            margin="normal"
           />
           <TextField
             id="password"
@@ -175,8 +177,16 @@ export function LoginPage() {
             onBlur={handleBlurPassword}
             value={formValues.password}
             fullWidth
+            variant="outlined"
+            margin="normal"
           />
-          <Button type="submit" disabled={isSigning}>
+          <Button
+            type="submit"
+            disabled={isSigning}
+            fullWidth
+            variant="contained"
+            sx={styles.submit()}
+          >
             Send
           </Button>
         </form>
