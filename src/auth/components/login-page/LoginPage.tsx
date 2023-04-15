@@ -6,12 +6,16 @@ import {
   TextField,
   Typography,
   Container,
+  Box,
+  Avatar,
 } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import React, { useState } from 'react';
 import axios from 'axios';
 
 import { passwordValidationMessage } from '../../../messages';
 import { signin } from '../../../api/request';
+import { styles } from './styles';
 
 interface FormFields {
   email: string;
@@ -128,46 +132,55 @@ export function LoginPage() {
   };
 
   return (
-    <Container>
+    <Container component="main" maxWidth="xs">
       <CssBaseline />
-      {isSigning && <CircularProgress data-testid="loading-indicator" />}
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        open={isOpen}
-        onClose={() => {
-          setIsOpen(false);
-        }}
-        message={errorMessage}
-        autoHideDuration={6000}
-      />
-      <Typography variant="h1">Login Page</Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          id="email"
-          label="email"
-          name="email"
-          helperText={emailHelperText}
-          onChange={handleChange}
-          value={formValues.email}
-          onBlur={handleBlurEmail}
+      <Box sx={styles.paper()}>
+        <Avatar>
+          <LockOutlinedIcon />
+        </Avatar>
+        {isSigning && <CircularProgress data-testid="loading-indicator" />}
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          open={isOpen}
+          onClose={() => {
+            setIsOpen(false);
+          }}
+          message={errorMessage}
+          autoHideDuration={6000}
         />
-        <TextField
-          id="password"
-          label="password"
-          name="password"
-          type="password"
-          helperText={passwordHelperText}
-          onChange={handleChange}
-          onBlur={handleBlurPassword}
-          value={formValues.password}
-        />
-        <Button type="submit" disabled={isSigning}>
-          Send
-        </Button>
-      </form>
+        <Typography component="h1" variant="h5">
+          Login Page
+        </Typography>
+        <form style={styles.form()} onSubmit={handleSubmit}>
+          <TextField
+            id="email"
+            label="email"
+            name="email"
+            helperText={emailHelperText}
+            onChange={handleChange}
+            value={formValues.email}
+            onBlur={handleBlurEmail}
+            fullWidth
+          />
+          <TextField
+            id="password"
+            label="password"
+            name="password"
+            type="password"
+            helperText={passwordHelperText}
+            onChange={handleChange}
+            onBlur={handleBlurPassword}
+            value={formValues.password}
+            fullWidth
+          />
+          <Button type="submit" disabled={isSigning}>
+            Send
+          </Button>
+        </form>
+      </Box>
     </Container>
   );
 }
