@@ -36,7 +36,7 @@ const SendButton = () => screen.getByRole('button', { name: /send/i });
 
 const fillSignInForm = (
   email = 'valid@gmail.com',
-  password = 'valid@gmail.com'
+  password = 'Aa123456789!@#'
 ) => {
   const emailTextField = EmailInput();
   const passwordTextField = PasswordInput();
