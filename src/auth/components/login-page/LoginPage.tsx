@@ -113,6 +113,9 @@ export function LoginPage() {
     if (isValidEmail(formValues.email)) {
       setEmailHelperText(null);
     }
+    if (isValidPassword(formValues.password)) {
+      setPasswordHelperText(null);
+    }
   };
   const handleBlurEmail = () => {
     if (!isValidEmail(formValues.email)) {
@@ -166,6 +169,7 @@ export function LoginPage() {
             fullWidth
             variant="outlined"
             margin="normal"
+            error={!!emailHelperText}
           />
           <TextField
             id="password"
@@ -179,6 +183,7 @@ export function LoginPage() {
             fullWidth
             variant="outlined"
             margin="normal"
+            error={!!passwordHelperText}
           />
           <Button
             type="submit"
