@@ -1,6 +1,13 @@
-import { Button, CircularProgress, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Snackbar,
+  TextField,
+  Typography,
+} from '@mui/material';
 import React, { useState } from 'react';
 import { sign } from 'crypto';
+import axios, { AxiosError } from 'axios';
 import { passwordValidationMessage } from '../../../messages';
 import { signin } from '../../../api/request';
 
@@ -39,21 +46,31 @@ export function LoginPage() {
     password: '',
   });
   const [isSigning, setIsSigning] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const isValidForm = (): boolean => {
+    const { email, password } = formValues;
+    const isEmailEmpty = !email;
+    const isPasswordEmpty = !password;
+    if (isEmailEmpty) {
+      setEmailHelperText('The email is required');
+    }
+    if (isPasswordEmpty) {
+      setPasswordHelperText('The password is required');
+    }
+
+    return !isEmailEmpty && !isPasswordEmpty;
+  };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // const formElement = event.currentTarget;
     // const formElements = formElement.elements as typeof formElement.elements &
     //   FormValueFields;
     const { email, password } = formValues;
-
-    if (email.trim().length === 0) {
-      setEmailHelperText('The email is required');
-    }
-    if (password.trim().length === 0) {
-      setPasswordHelperText('The password is required');
-    }
-
+    // if is a invalid form return;
+    if (!isValidForm()) return;
     function timeout(ms: number) {
       // eslint-disable-next-line no-promise-executor-return
       return new Promise((resolve) => setTimeout(resolve, ms));
@@ -61,12 +78,16 @@ export function LoginPage() {
 
     setIsSigning(true);
 
-    await timeout(2000);
+    // await timeout(2000);
     try {
       const res = await signin({ email, password });
       console.log(`res ${JSON.stringify(res.data)}`);
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response) {
+        const data = error.response.data as { message: string };
+        setErrorMessage(data.message);
+        setIsOpen(true);
+      }
     } finally {
       setIsSigning(false);
     }
@@ -107,7 +128,18 @@ export function LoginPage() {
   return (
     <>
       {isSigning && <CircularProgress data-testid="loading-indicator" />}
-
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        open={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+        }}
+        message={errorMessage}
+        autoHideDuration={6000}
+      />
       <Typography variant="h1">Login Page</Typography>
       <form onSubmit={handleSubmit}>
         <TextField

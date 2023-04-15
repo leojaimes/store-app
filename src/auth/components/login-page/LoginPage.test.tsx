@@ -197,9 +197,7 @@ describe('when the user submit the login form with valid data', () => {
 
     expect(sendButton).not.toBeDisabled();
     fireEvent.click(sendButton);
-    await waitFor(() => expect(sendButton).not.toBeDisabled(), {
-      timeout: 4000,
-    });
+    await waitFor(() => expect(sendButton).not.toBeDisabled());
   });
   it('must be a loading indicator at the top of the form while it is fetching', async () => {
     fillSignInFormWithValidValues();
@@ -207,11 +205,45 @@ describe('when the user submit the login form with valid data', () => {
     expect(screen.queryByTestId('loading-indicator')).not.toBeInTheDocument();
     fireEvent.click(SendButton());
     expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
-    await waitForElementToBeRemoved(
-      () => screen.queryByTestId('loading-indicator'),
-      {
-        timeout: 4000,
-      }
+    await waitForElementToBeRemoved(() =>
+      screen.queryByTestId('loading-indicator')
     );
   });
+});
+
+describe('when the user submit the login form with valid data and there is an unexpected server error', () => {
+  it('must display the error message: "Unexpected error, please try again" from the api', async () => {
+    //
+    server.use(
+      rest.post('/login', async (req, res, ctx) => {
+        return res(
+          ctx.status(500),
+          ctx.json({
+            message: 'Unexpected error, please try again',
+          })
+        );
+      })
+    );
+
+    expect(
+      screen.queryByText(/unexpected error, please try again/i)
+    ).not.toBeInTheDocument();
+    fillSignInFormWithValidValues();
+    fireEvent.click(SendButton());
+
+    expect(
+      await screen.findByText(/unexpected error, please try again/i)
+    ).toBeInTheDocument();
+
+    //
+  });
+});
+
+describe('when the user submit the login form with valid data and there is and invalid credentials error', () => {
+  it.todo(
+    'must display the error message: "The email or password are not correct" from the api',
+    async () => {
+      //
+    }
+  );
 });
