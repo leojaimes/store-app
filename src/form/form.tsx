@@ -12,5 +12,5 @@ export function Form() {
 }
 
 export const form = () => {
-  return <div>form</div>;
+  return <div>form </div>;
 };
