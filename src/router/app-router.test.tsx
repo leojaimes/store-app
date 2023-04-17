@@ -22,12 +22,13 @@ const renderWithRouter = (ui: JSX.Element, { url = '/' } = {}) => {
 };
 
 describe('when the user is not authenticated and enters on admin page', () => {
-  it('must redirect to login page', () => {
+  it('must redirect to login page', async () => {
     const url = '/admin';
     render(<AppRouter />, { wrapper: Router });
 
-    window.history.pushState({}, 'Admin Page', url);
-    expect(screen.getByText(/admin/i)).toBeInTheDocument();
+    // window.history.pushState({}, 'Admin Page', url);
+    renderWithRouter(<AppRouter />, { url });
+    expect(screen.getByText(/login page/i)).toBeInTheDocument();
   });
 });
 
