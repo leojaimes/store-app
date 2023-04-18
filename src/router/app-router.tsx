@@ -4,22 +4,37 @@ import { LoginPage } from '../auth/components/login-page/LoginPage';
 import { Employee } from '../employee/Employee';
 import { Admin } from '../admin/Admin';
 
-const isAuth = false;
-export function AppRouter() {
+interface PrivateRouteProps {
+  children: JSX.Element;
+  isAuth: boolean;
+}
+function PrivateRoute({ children, isAuth }: PrivateRouteProps) {
   const location = useLocation();
+  return isAuth ? children : <Navigate to="/" state={{ from: location }} />;
+}
+
+interface AppRouterProps {
+  isAuth?: boolean;
+}
+
+export function AppRouter({ isAuth = false }: AppRouterProps) {
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route
         path="/admin"
         element={
-          isAuth ? <Admin /> : <Navigate to="/" state={{ from: location }} />
+          <PrivateRoute isAuth={isAuth}>
+            <Admin />
+          </PrivateRoute>
         }
       />
       <Route
         path="/employee"
         element={
-          isAuth ? <Employee /> : <Navigate to="/" state={{ from: location }} />
+          <PrivateRoute isAuth={isAuth}>
+            <Employee />
+          </PrivateRoute>
         }
       />
 
