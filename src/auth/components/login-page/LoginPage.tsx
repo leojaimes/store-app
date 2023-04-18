@@ -10,17 +10,15 @@ import {
   Avatar,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { redirect, Navigate } from 'react-router-dom';
 import { passwordValidationMessage } from '../../../messages';
 import { signin } from '../../../api/request';
 import { styles } from './styles';
 import { Role } from '../../../const/roles';
+import { AuthContext } from '../../../utils/contexts/auth-context';
 
-interface LoginPageProps {
-  onSuccessLogin?: () => void;
-}
 interface FormFields {
   email: string;
   password: string;
@@ -46,7 +44,8 @@ const isValidPassword = (password: string): boolean => {
   return passwordRulesRegex.test(password);
 };
 
-export function LoginPage({ onSuccessLogin = () => {} }: LoginPageProps) {
+export function LoginPage() {
+  const { onSuccessLogin } = useContext(AuthContext);
   const [emailHelperText, setEmailHelperText] = useState<string | null>(null);
 
   const [passwordHelperText, setPasswordHelperText] = useState<string | null>(
