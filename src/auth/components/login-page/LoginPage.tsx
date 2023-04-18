@@ -46,7 +46,7 @@ const isValidPassword = (password: string): boolean => {
   return passwordRulesRegex.test(password);
 };
 
-export function LoginPage({ onSuccessLogin }: LoginPageProps) {
+export function LoginPage({ onSuccessLogin = () => {} }: LoginPageProps) {
   const [emailHelperText, setEmailHelperText] = useState<string | null>(null);
 
   const [passwordHelperText, setPasswordHelperText] = useState<string | null>(
@@ -96,7 +96,7 @@ export function LoginPage({ onSuccessLogin }: LoginPageProps) {
       const res = await signin({ email, password });
       console.log(`res ${JSON.stringify(res.data.user)}`);
       setUser({ role: res.data.user.role });
-      if (onSuccessLogin) onSuccessLogin();
+      onSuccessLogin();
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
         const data = error.response.data as { message: string };
