@@ -16,7 +16,12 @@ export function AppRouter() {
           isAuth ? <Admin /> : <Navigate to="/" state={{ from: location }} />
         }
       />
-      <Route path="/employee" element={<Employee />} />
+      <Route
+        path="/employee"
+        element={
+          isAuth ? <Employee /> : <Navigate to="/" state={{ from: location }} />
+        }
+      />
 
       <Route path="*" element={<LoginPage />} />
     </Routes>
