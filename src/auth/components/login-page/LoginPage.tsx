@@ -19,7 +19,7 @@ import { styles } from './styles';
 import { Role } from '../../../const/roles';
 
 interface LoginPageProps {
-  onSuccessLogin: () => void;
+  onSuccessLogin?: () => void;
 }
 interface FormFields {
   email: string;
@@ -96,7 +96,7 @@ export function LoginPage({ onSuccessLogin }: LoginPageProps) {
       const res = await signin({ email, password });
       console.log(`res ${JSON.stringify(res.data.user)}`);
       setUser({ role: res.data.user.role });
-      onSuccessLogin();
+      if (onSuccessLogin) onSuccessLogin();
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
         const data = error.response.data as { message: string };
@@ -143,8 +143,8 @@ export function LoginPage({ onSuccessLogin }: LoginPageProps) {
     setPasswordHelperText(null);
   };
   if (!isSigning && user.role && user.role === Role.Admin) {
-    console.log('user with role');
-    <Navigate to="/admin" />;
+    console.log('navigate to');
+    return <Navigate to="/admin" replace />;
   }
   return (
     <Container component="main" maxWidth="xs">
