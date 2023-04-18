@@ -7,6 +7,7 @@ import {
   RestRequest,
   rest,
 } from 'msw';
+import { Role } from '../const/roles';
 
 export interface SignInPostRequestBody {
   email: string;
@@ -50,12 +51,19 @@ export const handlers = [
       sessionStorage.setItem('is-authenticated', 'true');
 
       const { email, password } = req.body;
+      let role = 'user';
+      if (email === 'admin@gmail.com') {
+        role = Role.Admin;
+      }
       return res(
         ctx.status(200),
         ctx.json({
           message: 'ok',
           email,
           password,
+          user: {
+            role,
+          },
         })
       );
     }

@@ -10,7 +10,7 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { AppRouter } from './app-router';
 import { renderWithRouter } from '../utils/tests';
-import { handlers } from '../mocks/handlers';
+import { SignInPostRequestBody, handlers } from '../mocks/handlers';
 
 const server = setupServer(...handlers);
 beforeAll(() => {
@@ -69,17 +69,13 @@ describe('when the user is authenticated and enters on admin page', () => {
 });
 
 describe('when admin is authenticated in login page', () => {
-  it('must be redirected to admin page', () => {
-    // setup server
-    // got to login page
+  it('must be redirected to admin page', async () => {
     const url = '/';
-    renderWithRouter(<AppRouter />, { url });
+    renderWithRouter(<AppRouter isAuth />, { url });
 
-    // fill for as admin
     fillSignInForm({ email: 'admin@gmail.com', password: 'Aa123456789!@#' });
     fireEvent.click(SendButton());
-    // submit form
-    // expect admin page
-    expect(screen.getByText(/admin/i)).toBeInTheDocument();
+
+    expect(await screen.findByText(/admin/i)).toBeInTheDocument();
   });
 });

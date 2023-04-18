@@ -12,11 +12,15 @@ import {
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import { redirect, Navigate } from 'react-router-dom';
 import { passwordValidationMessage } from '../../../messages';
 import { signin } from '../../../api/request';
 import { styles } from './styles';
+import { Role } from '../../../const/roles';
 
+interface LoginPageProps {
+  onSuccessLogin: () => void;
+}
 interface FormFields {
   email: string;
   password: string;
@@ -41,7 +45,8 @@ const isValidPassword = (password: string): boolean => {
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/; // /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
   return passwordRulesRegex.test(password);
 };
-export function LoginPage() {
+
+export function LoginPage({ onSuccessLogin }: LoginPageProps) {
   const [emailHelperText, setEmailHelperText] = useState<string | null>(null);
 
   const [passwordHelperText, setPasswordHelperText] = useState<string | null>(
@@ -55,6 +60,7 @@ export function LoginPage() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [user, setUser] = useState({ role: '' });
 
   const isValidForm = (): boolean => {
     const { email, password } = formValues;
@@ -71,6 +77,7 @@ export function LoginPage() {
   };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     // const formElement = event.currentTarget;
     // const formElements = formElement.elements as typeof formElement.elements &
     //   FormValueFields;
@@ -87,7 +94,9 @@ export function LoginPage() {
     // await timeout(2000);
     try {
       const res = await signin({ email, password });
-      console.log(`res ${JSON.stringify(res.data)}`);
+      console.log(`res ${JSON.stringify(res.data.user)}`);
+      setUser({ role: res.data.user.role });
+      onSuccessLogin();
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
         const data = error.response.data as { message: string };
@@ -133,7 +142,10 @@ export function LoginPage() {
     }
     setPasswordHelperText(null);
   };
-
+  if (!isSigning && user.role && user.role === Role.Admin) {
+    console.log('user with role');
+    <Navigate to="/admin" />;
+  }
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
