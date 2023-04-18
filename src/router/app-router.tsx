@@ -3,15 +3,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { LoginPage } from '../auth/components/login-page/LoginPage';
 import { Employee } from '../employee/Employee';
 import { Admin } from '../admin/Admin';
-
-interface PrivateRouteProps {
-  children: JSX.Element;
-  isAuth: boolean;
-}
-function PrivateRoute({ children, isAuth }: PrivateRouteProps) {
-  const location = useLocation();
-  return isAuth ? children : <Navigate to="/" state={{ from: location }} />;
-}
+import { PrivateRoute } from './PrivateRoute';
 
 interface AppRouterProps {
   isAuth?: boolean;
