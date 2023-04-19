@@ -8,7 +8,7 @@ import {
 
 import { setupServer } from 'msw/node';
 import { AppRouter } from './app-router';
-import { renderWithRouter } from '../utils/tests';
+import { renderWithAuthProvider, renderWithRouter } from '../utils/tests';
 import { handlers } from '../mocks/handlers';
 import App from '../App';
 
@@ -62,10 +62,9 @@ describe('when the user is not authenticated and enters on employee page', () =>
 describe('when the user is authenticated and enters on admin page', () => {
   it('must show admin page', () => {
     const url = '/admin';
-    // TODO
-    // renderWithRouter(<AppRouter />, { url });
 
-    // expect(screen.getByText(/admin/i)).toBeInTheDocument();
+    renderWithAuthProvider(<AppRouter />, { url }, true);
+    expect(screen.getByText(/admin/i)).toBeInTheDocument();
   });
 });
 
