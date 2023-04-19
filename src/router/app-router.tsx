@@ -1,5 +1,11 @@
 import React, { useState, createContext, useContext } from 'react';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  BrowserRouter as Router,
+} from 'react-router-dom';
 import { LoginPage } from '../auth/components/login-page/LoginPage';
 import { Employee } from '../employee/Employee';
 import { Admin } from '../admin/Admin';
