@@ -1,4 +1,4 @@
-import React, { useState, createContext } from 'react';
+import React, { useState, createContext, useContext } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { LoginPage } from '../auth/components/login-page/LoginPage';
 import { Employee } from '../employee/Employee';
@@ -6,22 +6,12 @@ import { Admin } from '../admin/Admin';
 import { PrivateRoute } from './PrivateRoute';
 import { AuthContext } from '../utils/contexts/auth-context';
 
-interface AppRouterProps {
-  isAuth?: boolean;
-}
-
-export function AppRouter({ isAuth = false }: AppRouterProps) {
-  const [isUserAuth, setIsUserAuth] = useState<boolean>(isAuth);
-  const handleSuccessLogin = () => setIsUserAuth(true);
-
-  // eslint-disable-next-line react/jsx-no-constructed-context-values
+export function AppRouter() {
+  const { isUserAuth } = useContext(AuthContext);
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={<LoginPage onSuccessLogin={handleSuccessLogin} />}
-      />
+      <Route path="/" element={<LoginPage />} />
       <Route
         path="/admin"
         element={
