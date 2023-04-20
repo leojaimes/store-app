@@ -89,5 +89,6 @@ describe('when admin is authenticated in login page', () => {
     fireEvent.click(SendButton());
 
     expect(await screen.findByText(/admin/i)).toBeInTheDocument();
+    expect(await screen.findByText(/User Name Test/i)).toBeInTheDocument();
   });
 });

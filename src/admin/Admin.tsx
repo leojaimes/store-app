@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material';
 import ButtonAppBar from '../common/components/ButtonAppBar';
 
 export function Admin() {
@@ -5,7 +6,9 @@ export function Admin() {
   return (
     <>
       <ButtonAppBar />
-      <h1>Admin Page</h1>
+      <Typography component="h1" variant="h5">
+        Admin Page
+      </Typography>
     </>
   );
 }
