@@ -8,7 +8,11 @@ import {
 
 import { setupServer } from 'msw/node';
 import { AppRouter } from './app-router';
-import { renderWithAuthProvider, renderWithRouter } from '../utils/tests';
+import {
+  renderWithAuthProvider,
+  renderWithAuthProviderRouter,
+  renderWithRouter,
+} from '../utils/tests';
 import { handlers } from '../mocks/handlers';
 import App from '../App';
 import { AuthState } from '../contexts/auth/auth-state';
@@ -72,7 +76,7 @@ describe('when the user is authenticated and enters on admin page', () => {
       },
     };
     const url = '/admin';
-    renderWithAuthProvider(<AppRouter />, state, { url });
+    renderWithAuthProviderRouter(<AppRouter />, state, { url });
     expect(screen.getByText(/admin/i)).toBeInTheDocument();
   });
 });

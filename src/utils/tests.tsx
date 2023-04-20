@@ -24,9 +24,22 @@ export const renderWithRouter = (ui: JSX.Element, { url = '/' } = {}) => {
   };
 };
 
-export const renderWithAuthProvider = (
-  ui: JSX.Element,
+export const renderWithAuthProvider = (ui: JSX.Element, state: AuthState) => {
+  return {
+    user: userEvent.setup(),
+    ...render(
+      <AuthContext.Provider
+        // eslint-disable-next-line react/jsx-no-constructed-context-values
+        value={{ ...state, onSuccessLogin: () => {} }}
+      >
+        {ui}
+      </AuthContext.Provider>
+    ),
+  };
+};
 
+export const renderWithAuthProviderRouter = (
+  ui: JSX.Element,
   state: AuthState,
   { url = '/' } = {}
 ) => {
