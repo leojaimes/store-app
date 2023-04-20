@@ -1,12 +1,11 @@
-import React, { useContext } from 'react';
-import { AuthContext } from '../contexts/auth/auth-context';
+import ButtonAppBar from '../common/components/ButtonAppBar';
 
 export function Admin() {
-  const { user } = useContext(AuthContext);
+  // const { user } = useContext(AuthContext);
   return (
     <>
+      <ButtonAppBar />
       <h1>Admin Page</h1>
-      <p>{user?.name}</p>
     </>
   );
 }

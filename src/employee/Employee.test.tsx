@@ -23,3 +23,21 @@ describe('when the admin access to employee page is mounted ', () => {
     expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
   });
 });
+
+describe('when the Employee access to employee page ', () => {
+  it('must not have to access to delete the employee button', async () => {
+    const state: AuthState = {
+      isUserAuth: true,
+      user: {
+        email: 'admin@gmail.com',
+        role: Role.Employee,
+        name: 'Admin Name Test',
+      },
+    };
+
+    renderWithAuthProvider(<Employee />, state);
+    expect(
+      screen.queryByRole('button', { name: /delete/i })
+    ).not.toBeInTheDocument();
+  });
+});
