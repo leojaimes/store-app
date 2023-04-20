@@ -8,18 +8,18 @@ import { AppRouter } from '../router/app-router';
 import { AuthState } from '../contexts/auth/auth-state';
 import { Role } from '../const/roles';
 
-describe('when the admin page is mounted ', () => {
-  it('must display the admin user name', async () => {
+describe('when the admin access to employee page is mounted ', () => {
+  it('must have to access to delete the employee button', async () => {
     const state: AuthState = {
       isUserAuth: true,
       user: {
         email: 'admin@gmail.com',
-        role: Role.Employee,
-        name: 'User Name Test',
+        role: Role.Admin,
+        name: 'Admin Name Test',
       },
     };
 
     renderWithAuthProvider(<Employee />, state);
-    expect(screen.getByText(/User Name Test/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
   });
 });
