@@ -63,6 +63,8 @@ export const handlers = [
           password,
           user: {
             role,
+            email,
+            name: 'User Name Test',
           },
         })
       );

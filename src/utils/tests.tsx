@@ -11,7 +11,9 @@ import {
 import userEvent from '@testing-library/user-event';
 
 import { BrowserRouter as Router } from 'react-router-dom';
-import { AuthContext } from './contexts/auth-context';
+import { AuthContext } from '../contexts/auth/auth-context';
+import { IUser } from '../common/entities';
+import { AuthState } from '../contexts/auth/auth-state';
 
 export const renderWithRouter = (ui: JSX.Element, { url = '/' } = {}) => {
   window.history.pushState({}, 'title', url);
@@ -24,8 +26,9 @@ export const renderWithRouter = (ui: JSX.Element, { url = '/' } = {}) => {
 
 export const renderWithAuthProvider = (
   ui: JSX.Element,
-  { url = '/' } = {},
-  auth = false
+
+  state: AuthState,
+  { url = '/' } = {}
 ) => {
   window.history.pushState({}, 'title', url);
 
@@ -34,7 +37,7 @@ export const renderWithAuthProvider = (
     ...render(
       <AuthContext.Provider
         // eslint-disable-next-line react/jsx-no-constructed-context-values
-        value={{ isUserAuth: auth, onSuccessLogin: () => {} }}
+        value={{ ...state, onSuccessLogin: () => {} }}
       >
         {ui}
       </AuthContext.Provider>,

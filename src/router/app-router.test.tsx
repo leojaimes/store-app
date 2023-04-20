@@ -11,6 +11,8 @@ import { AppRouter } from './app-router';
 import { renderWithAuthProvider, renderWithRouter } from '../utils/tests';
 import { handlers } from '../mocks/handlers';
 import App from '../App';
+import { AuthState } from '../contexts/auth/auth-state';
+import { Role } from '../const/roles';
 
 const server = setupServer(...handlers);
 beforeAll(() => {
@@ -61,9 +63,16 @@ describe('when the user is not authenticated and enters on employee page', () =>
 
 describe('when the user is authenticated and enters on admin page', () => {
   it('must show admin page', () => {
+    const state: AuthState = {
+      isUserAuth: true,
+      user: {
+        email: 'admin@gmail.com',
+        role: Role.Admin,
+        name: 'User Name Test',
+      },
+    };
     const url = '/admin';
-
-    renderWithAuthProvider(<AppRouter />, { url }, true);
+    renderWithAuthProvider(<AppRouter />, state, { url });
     expect(screen.getByText(/admin/i)).toBeInTheDocument();
   });
 });

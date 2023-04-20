@@ -17,7 +17,7 @@ import { passwordValidationMessage } from '../../../messages';
 import { signin } from '../../../api/request';
 import { styles } from './styles';
 import { Role } from '../../../const/roles';
-import { AuthContext } from '../../../utils/contexts/auth-context';
+import { AuthContext } from '../../../contexts/auth/auth-context';
 
 interface FormFields {
   email: string;
@@ -45,7 +45,7 @@ const isValidPassword = (password: string): boolean => {
 };
 
 export function LoginPage() {
-  const { onSuccessLogin } = useContext(AuthContext);
+  const { onSuccessLogin, user } = useContext(AuthContext);
   const [emailHelperText, setEmailHelperText] = useState<string | null>(null);
 
   const [passwordHelperText, setPasswordHelperText] = useState<string | null>(
@@ -59,7 +59,6 @@ export function LoginPage() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [user, setUser] = useState({ role: '' });
 
   const isValidForm = (): boolean => {
     const { email, password } = formValues;
@@ -94,8 +93,12 @@ export function LoginPage() {
     try {
       const res = await signin({ email, password });
       console.log(`res ${JSON.stringify(res.data.user)}`);
-      setUser({ role: res.data.user.role });
-      onSuccessLogin();
+      // setUser({ role: res.data.user.role });
+      onSuccessLogin({
+        email,
+        name: res.data.user.name,
+        role: res.data.user.role,
+      });
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
         const data = error.response.data as { message: string };
@@ -108,6 +111,10 @@ export function LoginPage() {
 
     // setEmailHelperText(null);
   };
+  if (!isSigning && user?.role && user.role === Role.Admin) {
+    console.log('navigate to');
+    return <Navigate to="/admin" replace />;
+  }
   const handleChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
@@ -141,10 +148,7 @@ export function LoginPage() {
     }
     setPasswordHelperText(null);
   };
-  if (!isSigning && user.role && user.role === Role.Admin) {
-    console.log('navigate to');
-    return <Navigate to="/admin" replace />;
-  }
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />

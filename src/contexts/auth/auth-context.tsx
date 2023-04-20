@@ -1,8 +1,10 @@
 import { createContext } from 'react';
+import { IUser } from '../../common/entities';
 
 export interface AuthContextProps {
   isUserAuth: boolean;
-  onSuccessLogin: () => void;
+  user?: IUser;
+  onSuccessLogin: (user: IUser) => void;
 }
 export const AuthContext = createContext<AuthContextProps>({
   isUserAuth: false,

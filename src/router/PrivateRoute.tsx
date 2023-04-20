@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../utils/contexts/auth-context';
+import { AuthContext } from '../contexts/auth/auth-context';
 
 interface PrivateRouteProps {
   children: JSX.Element;
