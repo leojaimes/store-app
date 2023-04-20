@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { Admin } from './Admin';
+import { Employee } from './Employee';
 import { renderWithAuthProvider } from '../utils/tests';
 import { AppRouter } from '../router/app-router';
 import { AuthState } from '../contexts/auth/auth-state';
@@ -15,7 +15,7 @@ describe('when the admin page is mounted ', () => {
         name: 'User Name Test',
       },
     };
-    const url = '/admin';
+    const url = '/employee';
     renderWithAuthProvider(<AppRouter />, state, { url });
     expect(screen.getByText(/User Name Test/i)).toBeInTheDocument();
   });
