@@ -52,12 +52,15 @@ export const handlers = [
 
       const { email, password } = req.body;
       let role = 'user';
+      let name = 'user';
       if (email === 'admin@gmail.com') {
         role = Role.Admin;
+        name = 'my admin name';
       }
 
       if (email === 'employee@gmail.com') {
         role = Role.Employee;
+        name = 'my employee name';
       }
 
       return res(
@@ -69,7 +72,7 @@ export const handlers = [
           user: {
             role,
             email,
-            name: 'User Name Test',
+            name,
           },
         })
       );

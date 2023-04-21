@@ -89,8 +89,10 @@ describe('when admin is authenticated in login page', () => {
     fillSignInForm({ email: 'admin@gmail.com', password: 'Aa123456789!@#' });
     fireEvent.click(SendButton());
 
-    expect(await screen.findByText(/admin/i)).toBeInTheDocument();
-    expect(await screen.findByText(/User Name Test/i)).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: /^admin page/i })
+    ).toBeInTheDocument();
+    expect(await screen.findByText(/my admin name/i)).toBeInTheDocument();
   });
 });
 
