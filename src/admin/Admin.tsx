@@ -1,5 +1,5 @@
-import { Typography } from '@mui/material';
-import { Link, Navigate } from 'react-router-dom';
+import { Typography, Button, Link as MaterialLink } from '@mui/material';
+import { Navigate, Link } from 'react-router-dom';
 import { useContext } from 'react';
 import ButtonAppBar from '../common/components/ButtonAppBar';
 import { Role } from '../const/roles';
@@ -22,7 +22,6 @@ export function Admin() {
       <Typography component="h1" variant="h5">
         Admin Page
       </Typography>
-      <Link to="/employee">Employees</Link>
     </>
   );
 }

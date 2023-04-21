@@ -19,7 +19,7 @@ describe('when the admin access to employee page is mounted ', () => {
       },
     };
 
-    renderWithAuthProvider(<Employee />, state);
+    renderWithAuthProviderRouter(<Employee />, state);
     expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
   });
 });

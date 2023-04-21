@@ -12,7 +12,7 @@ import {
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import React, { useContext, useState } from 'react';
 import axios from 'axios';
-import { redirect, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { passwordValidationMessage } from '../../../messages';
 import { signin } from '../../../api/request';
 import { styles } from './styles';
