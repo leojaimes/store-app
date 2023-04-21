@@ -107,7 +107,41 @@ describe('when admin goes to employees page', () => {
     const adminUrl = '/admin';
     renderWithAuthProviderRouter(<AppRouter />, state, { url: adminUrl });
     expect(screen.getByText(/employees/i)).toBeInTheDocument();
-    fireEvent.click(screen.getByText(/employees/i));
-    expect(await screen.findByText(/employees page/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('link', { name: /employees/i }));
+    expect(
+      await screen.findByRole('heading', { name: /^employees page/i })
+    ).toBeInTheDocument();
+  });
+});
+
+describe('when employee is authenticated in login page', () => {
+  it('must be redirected to employee page', async () => {
+    render(<App />);
+
+    fillSignInForm({ email: 'employee@gmail.com', password: 'Aa123456789!@#' });
+    fireEvent.click(SendButton());
+
+    expect(
+      await screen.findByRole('heading', { name: /^employees page/i })
+    ).toBeInTheDocument();
+  });
+});
+
+describe('when employee goes is authenticated in login page', () => {
+  it('must be redirected to employee page', async () => {
+    const state: AuthState = {
+      isUserAuth: true,
+      user: {
+        email: 'employee@gmail.com',
+        role: Role.Employee,
+        name: 'User Name Test',
+      },
+    };
+    const adminUrl = '/admin';
+    renderWithAuthProviderRouter(<AppRouter />, state, { url: adminUrl });
+
+    expect(
+      await screen.findByRole('heading', { name: /^employees page/i })
+    ).toBeInTheDocument();
   });
 });

@@ -115,6 +115,11 @@ export function LoginPage() {
     console.log('navigate to');
     return <Navigate to="/admin" replace />;
   }
+
+  if (!isSigning && user?.role && user.role === Role.Employee) {
+    console.log('navigate to employee');
+    return <Navigate to="/employee" replace />;
+  }
   const handleChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {

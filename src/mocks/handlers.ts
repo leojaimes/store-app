@@ -55,6 +55,11 @@ export const handlers = [
       if (email === 'admin@gmail.com') {
         role = Role.Admin;
       }
+
+      if (email === 'employee@gmail.com') {
+        role = Role.Employee;
+      }
+
       return res(
         ctx.status(200),
         ctx.json({
