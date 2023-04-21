@@ -19,7 +19,7 @@ describe('when the admin page is mounted ', () => {
       },
     };
 
-    renderWithAuthProvider(<Admin />, state);
+    renderWithAuthProviderRouter(<Admin />, state);
     expect(screen.getByText(/User Name Test/i)).toBeInTheDocument();
   });
 });

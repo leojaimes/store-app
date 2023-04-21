@@ -9,7 +9,7 @@ export function Employee() {
   return (
     <>
       <ButtonAppBar />
-      <h1>Employee</h1>
+      <h1>Employees Page</h1>
       {user?.role === Role.Admin && <Button>Delete</Button>}
     </>
   );

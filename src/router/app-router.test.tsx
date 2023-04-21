@@ -17,6 +17,7 @@ import { handlers } from '../mocks/handlers';
 import App from '../App';
 import { AuthState } from '../contexts/auth/auth-state';
 import { Role } from '../const/roles';
+import { Employee } from '../employee/Employee';
 
 const server = setupServer(...handlers);
 beforeAll(() => {
@@ -90,5 +91,23 @@ describe('when admin is authenticated in login page', () => {
 
     expect(await screen.findByText(/admin/i)).toBeInTheDocument();
     expect(await screen.findByText(/User Name Test/i)).toBeInTheDocument();
+  });
+});
+
+describe('when admin goes to employees page', () => {
+  it('must have access', async () => {
+    const state: AuthState = {
+      isUserAuth: true,
+      user: {
+        email: 'admin@gmail.com',
+        role: Role.Admin,
+        name: 'User Name Test',
+      },
+    };
+    const adminUrl = '/admin';
+    renderWithAuthProviderRouter(<AppRouter />, state, { url: adminUrl });
+    expect(screen.getByText(/employees/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByText(/employees/i));
+    expect(await screen.findByText(/employees page/i)).toBeInTheDocument();
   });
 });
