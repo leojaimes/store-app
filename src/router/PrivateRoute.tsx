@@ -15,11 +15,12 @@ export function PrivateRoute({ children }: PrivateRouteProps) {
 
   const permission = getRoutePermissionsByRole(user?.role);
 
-  const foundPermitedRoutes = permission.permittedRoutes.filter(
-    (permitedRouted) => permitedRouted === location.pathname
-  );
+  // const foundPermitedRoutes = permission.permittedRoutes.filter(
+  //   (permitedRouted) => permitedRouted === location.pathname
+  // );
 
-  if (foundPermitedRoutes.length > 0) {
+  // // if (foundPermitedRoutes.length > 0) {
+  if (permission.permittedRoutes.includes(location.pathname)) {
     return isUserAuth ? (
       children
     ) : (
