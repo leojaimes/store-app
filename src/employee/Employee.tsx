@@ -8,10 +8,6 @@ import ButtonAppBar from '../common/components/ButtonAppBar';
 export function Employee() {
   const { user } = useContext(AuthContext);
 
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
-
   return (
     <>
       <ButtonAppBar />

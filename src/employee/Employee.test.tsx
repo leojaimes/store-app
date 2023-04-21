@@ -63,7 +63,6 @@ describe('when the Employee access to employee page ', () => {
       getByRole: getByRoleWithinHeader,
     } = within(headerElement);
 
-    // Utilizar los alias para seleccionar elementos dentro del headerElement
     expect(getByTextWithinHeader(employeeName)).toBeInTheDocument();
 
     screen.debug();

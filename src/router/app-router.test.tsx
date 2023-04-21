@@ -147,3 +147,41 @@ describe('when employee goes is authenticated in login page', () => {
     ).toBeInTheDocument();
   });
 });
+
+describe('when employee goes is authenticated in login page', () => {
+  it('must be redirected to employee page', async () => {
+    const state: AuthState = {
+      isUserAuth: true,
+      user: {
+        email: 'employee@gmail.com',
+        role: Role.Employee,
+        name: 'User Name Test',
+      },
+    };
+    const adminUrl = '/admin';
+    renderWithAuthProviderRouter(<AppRouter />, state, { url: adminUrl });
+
+    expect(
+      await screen.findByRole('heading', { name: /^employees page/i })
+    ).toBeInTheDocument();
+  });
+});
+
+describe('when employee goes to admin page', () => {
+  it.only('must be redirected to employee page', async () => {
+    const state: AuthState = {
+      isUserAuth: true,
+      user: {
+        email: 'employee@gmail.com',
+        role: Role.Employee,
+        name: 'User Name Test',
+      },
+    };
+    const adminUrl = '/admin';
+    renderWithAuthProviderRouter(<AppRouter />, state, { url: adminUrl });
+
+    expect(
+      await screen.findByRole('heading', { name: /^employees page/i })
+    ).toBeInTheDocument();
+  });
+});

@@ -3,6 +3,7 @@ import { LoginPage } from '../auth/components/login-page/LoginPage';
 import { Employee } from '../employee/Employee';
 import { Admin } from '../admin/Admin';
 import { PrivateRoute } from './PrivateRoute';
+import { Role } from '../const/roles';
 
 export function AppRouter() {
   return (

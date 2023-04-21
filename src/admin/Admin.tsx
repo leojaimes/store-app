@@ -8,14 +8,6 @@ import { AuthContext } from '../contexts/auth/auth-context';
 export function Admin() {
   const { user } = useContext(AuthContext);
 
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
-  if (user?.role && user.role === Role.Employee) {
-    console.log('navigate to employee');
-    return <Navigate to="/employee" replace />;
-  }
-
   return (
     <>
       <ButtonAppBar />
