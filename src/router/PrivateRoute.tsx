@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../contexts/auth/auth-context';
-import { Role, getRoutePermissionsByRole } from '../const/roles';
+import { getRoutePermissionsByRole } from '../const/roles';
 
 interface PrivateRouteProps {
   children: JSX.Element;
@@ -13,13 +13,8 @@ export function PrivateRoute({ children }: PrivateRouteProps) {
     return <Navigate to="/" />;
   }
 
-  const permission = getRoutePermissionsByRole(user?.role);
+  const permission = getRoutePermissionsByRole(user.role);
 
-  // const foundPermitedRoutes = permission.permittedRoutes.filter(
-  //   (permitedRouted) => permitedRouted === location.pathname
-  // );
-
-  // // if (foundPermitedRoutes.length > 0) {
   if (permission.permittedRoutes.includes(location.pathname)) {
     return isUserAuth ? (
       children
