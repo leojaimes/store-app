@@ -2,19 +2,21 @@ import { Button, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 
 export function LoginPage() {
-  const [email, setEmail] = useState<string>('');
-
-  const [password, setPassword] = useState<string>('');
-
   const [emailHelperText, setEmailHelperText] = useState<string>('');
   const [passwordHelperText, setPasswordHelperText] = useState<string>('');
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const formElement = e?.currentTarget;
+    const formElements = formElement.elements as typeof formElement.elements & {
+      email: { value: string };
+      password: { value: string };
+    };
+    const { email, password } = formElements;
     e.preventDefault();
-    if (!email) {
+    if (!email.value) {
       setEmailHelperText('email is required');
     }
-    if (!password) {
+    if (!password.value) {
       setPasswordHelperText('password is required');
     }
   };
@@ -32,16 +34,12 @@ export function LoginPage() {
         id="email"
         name="email"
         label="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
         helperText={emailHelperText}
       />
       <TextField
         id="password"
         name="password"
         label="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
         helperText={passwordHelperText}
       />
       <Button type="submit">Submit</Button>
