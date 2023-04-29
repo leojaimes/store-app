@@ -1,7 +1,14 @@
-import { Button, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  TextField,
+  Typography,
+  touchRippleClasses,
+} from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useState } from 'react';
+import { delay } from '../../util/delay';
 
 const validationSchema = yup
   .object({
@@ -22,6 +29,8 @@ export function LoginPage() {
     resolver: yupResolver(validationSchema),
   });
 
+  const [isFetching, setIsFetchin] = useState<boolean>(false);
+
   //   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   //     const formElement = e?.currentTarget;
   //     const formElements = formElement.elements as typeof formElement.elements & {
@@ -38,9 +47,12 @@ export function LoginPage() {
   //     }
   //   };
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const { email, password } = data;
     console.log(data);
+    setIsFetchin(true);
+    await delay(1000);
+    setIsFetchin(false);
   };
 
   return (
@@ -69,7 +81,9 @@ export function LoginPage() {
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...register('password')}
       />
-      <Button type="submit">Submit</Button>
+      <Button disabled={isFetching} type="submit">
+        Submit
+      </Button>
     </form>
   );
 }

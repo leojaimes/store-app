@@ -1,4 +1,4 @@
-import { screen, render, fireEvent } from '@testing-library/react';
+import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { LoginPage } from './LoginPage';
@@ -59,5 +59,20 @@ describe('when user onblur email text field and it has an invalid email value', 
     await userEvent.type(emailTextField, 'valid@email.com');
     await userEvent.tab();
     expect(screen.queryByText(/email is invalid/)).not.toBeInTheDocument();
+  });
+});
+
+describe('when user submit button', () => {
+  it('the submit button should be disable while fetching data', async () => {
+    render(<LoginPage />);
+    expect(screen.queryByText(/email is invalid/)).not.toBeInTheDocument();
+    const emailTextField = EmailTextField();
+    const passwordTextField = PasswordTextField();
+    const submitButton = SubmitButton();
+    await userEvent.type(emailTextField, 'valid@email.com');
+    await userEvent.type(passwordTextField, 'validpassword');
+    await userEvent.click(submitButton);
+    expect(submitButton).toBeDisabled();
+    await waitFor(() => expect(submitButton).not.toBeDisabled());
   });
 });
