@@ -43,3 +43,21 @@ describe('when user click submit', () => {
     expect(screen.getByText(/password is required/)).toBeInTheDocument();
   });
 });
+
+describe('when user onblur email text field and it has an invalid email value', () => {
+  it('should show this email is invalid', async () => {
+    render(<LoginPage />);
+    expect(screen.queryByText(/email is invalid/)).not.toBeInTheDocument();
+    const emailTextField = EmailTextField();
+
+    await userEvent.type(emailTextField, 'error.email');
+    expect(emailTextField).toHaveValue('error.email');
+    await userEvent.tab();
+
+    expect(screen.getByText(/email is invalid/)).toBeInTheDocument();
+
+    await userEvent.type(emailTextField, 'valid@email.com');
+    await userEvent.tab();
+    expect(screen.queryByText(/email is invalid/)).not.toBeInTheDocument();
+  });
+});

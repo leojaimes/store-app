@@ -3,10 +3,12 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-const validationSchema = yup.object({
-  email: yup.string().required('email is required'),
-  password: yup.string().required('password is required'),
-});
+const validationSchema = yup
+  .object({
+    email: yup.string().required('email is required').email('email is invalid'),
+    password: yup.string().required('password is required'),
+  })
+  .required();
 type Inputs = yup.InferType<typeof validationSchema>;
 
 export function LoginPage() {
@@ -14,6 +16,7 @@ export function LoginPage() {
     register,
     handleSubmit,
     watch,
+    trigger,
     formState: { errors },
   } = useForm<Inputs>({
     resolver: yupResolver(validationSchema),
@@ -35,16 +38,9 @@ export function LoginPage() {
   //     }
   //   };
 
-  const onSubmit: SubmitHandler<Inputs> = ({ email, password }) => {
-    console.log('onSubmit!');
-
-    if (!email) {
-      console.log(errors.email);
-      console.log('email is required');
-    }
-    if (!password) {
-      console.log('password is required');
-    }
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    const { email, password } = data;
+    console.log(data);
   };
 
   return (
@@ -63,7 +59,7 @@ export function LoginPage() {
         error={Boolean(errors.email)}
         helperText={errors.email && errors.email?.message}
         // eslint-disable-next-line react/jsx-props-no-spreading
-        {...register('email')}
+        {...register('email', { onBlur: () => trigger('email') })}
       />
       <TextField
         id="password"
