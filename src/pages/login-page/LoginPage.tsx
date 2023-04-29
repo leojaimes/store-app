@@ -9,6 +9,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useState } from 'react';
 import { delay } from '../../util/delay';
+import { signin } from '../../api/request';
 
 const validationSchema = yup
   .object({
@@ -51,7 +52,9 @@ export function LoginPage() {
     const { email, password } = data;
     console.log(data);
     setIsFetchin(true);
-    await delay(1000);
+    await delay(50);
+    const res = await signin({ email, password });
+    console.log(res.status);
     setIsFetchin(false);
   };
 

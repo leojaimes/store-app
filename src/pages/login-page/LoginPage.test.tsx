@@ -1,7 +1,21 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { setupServer } from 'msw/node';
 import { LoginPage } from './LoginPage';
+import { handlers } from '../../mocks/handlers';
+
+const server = setupServer(...handlers);
+beforeAll(() => {
+  server.listen();
+});
+
+afterEach(() => {
+  server.resetHandlers();
+});
+afterAll(() => {
+  server.close();
+});
 
 const EmailTextField = () => screen.getByRole('textbox', { name: /email/i });
 const PasswordTextField = () =>
