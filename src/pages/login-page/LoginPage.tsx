@@ -59,7 +59,7 @@ export function LoginPage() {
         </Box>
       )}
       {isError && (
-        <Alert severity="error" aria-label="loading">
+        <Alert severity="error" aria-label="error">
           {error.message}
         </Alert>
       )}

@@ -3,20 +3,17 @@ import axios, { AxiosError } from 'axios';
 
 interface SignInRequestBody {
   // Define la estructura de la solicitud de inicio de sesión
-  // según tus requisitos
   email: string;
   password: string;
 }
 
 interface SignInMutationResponse {
   // Define la estructura de la respuesta de la mutación de inicio de sesión
-  // según tus requisitos
   ok: string;
 }
 
 interface SignInMutationError {
   // Define la estructura de la respuesta de error de la mutación de inicio de sesión
-  // según tus requisitos
   message: string;
   status: number;
 }
@@ -46,7 +43,7 @@ export const useSigninMutationQuery = () => {
 
     onError: (error) => {
       // Puedes manejar el error aquí si lo deseas
-      console.error('Error durante la mutación:', error);
+      console.error('Error during mutation: ', error);
     },
     onSettled: () => {
       // queryClient.invalidateQueries('signIn'); // Invalida la caché de la consulta si es necesario

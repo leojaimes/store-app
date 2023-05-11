@@ -9,11 +9,34 @@ import { handlers } from '../../mocks/handlers';
 import { RenderReactQueryWrapper } from '../../mocks/render-with-provider';
 import { server } from '../../mocks/server';
 
+const mockServerWithError = () => {
+  server.use(
+    rest.post('/login', async (req, res, ctx) => {
+      return res(
+        ctx.status(500),
+        ctx.json({
+          message:
+            'Unexpected error, please try again when there is an error from api login',
+        })
+      );
+    })
+  );
+};
+
 const EmailTextField = () => screen.getByRole('textbox', { name: /email/i });
 const PasswordTextField = () =>
   screen.getByRole('textbox', { name: /password/i });
 
 const SubmitButton = () => screen.getByRole('button', { name: /submit/i });
+
+const fillAndSendLoginForm = async () => {
+  const emailTextField = EmailTextField();
+  const passwordTextField = PasswordTextField();
+  const submitButton = SubmitButton();
+  await userEvent.type(emailTextField, 'valid@email.com');
+  await userEvent.type(passwordTextField, 'validpassword');
+  await userEvent.click(submitButton);
+};
 
 describe('when login page is mounted', () => {
   it('should be show login title', () => {
@@ -106,23 +129,8 @@ describe('when user submit button', () => {
 describe('when user submit button', () => {
   it('it should display "Unexpected error, please try again when there is an error from api login" ', async () => {
     RenderReactQueryWrapper({ children: <LoginPage /> });
-    server.use(
-      rest.post('/login', async (req, res, ctx) => {
-        return res(
-          ctx.status(500),
-          ctx.json({
-            message:
-              'Unexpected error, please try again when there is an error from api login',
-          })
-        );
-      })
-    );
-    const emailTextField = EmailTextField();
-    const passwordTextField = PasswordTextField();
-    const submitButton = SubmitButton();
-    await userEvent.type(emailTextField, 'valid@email.com');
-    await userEvent.type(passwordTextField, 'validpassword');
-    await userEvent.click(submitButton);
+    mockServerWithError();
+    await fillAndSendLoginForm();
     expect(await screen.findByRole('alert')).toHaveTextContent(
       /Unexpected error, please try again when there is an error from api login/i
     );
