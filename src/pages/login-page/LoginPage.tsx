@@ -8,8 +8,11 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useState } from 'react';
+import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 import { delay } from '../../util/delay';
 import { signin } from '../../api/request';
+import { useSigninMutationQuery } from '../../api/useSignin';
 
 const validationSchema = yup
   .object({
@@ -30,8 +33,10 @@ export function LoginPage() {
     resolver: yupResolver(validationSchema),
   });
 
-  const [isFetching, setIsFetchin] = useState<boolean>(false);
+  // const [isFetching, setIsFetchin] = useState<boolean>(false);
 
+  const { mutate, data, error, isLoading, isSuccess } =
+    useSigninMutationQuery();
   //   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   //     const formElement = e?.currentTarget;
   //     const formElements = formElement.elements as typeof formElement.elements & {
@@ -48,14 +53,13 @@ export function LoginPage() {
   //     }
   //   };
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const { email, password } = data;
+  const onSubmit: SubmitHandler<Inputs> = async (inputs) => {
+    const { email, password } = inputs;
     console.log(data);
-    setIsFetchin(true);
+
     await delay(50);
-    const res = await signin({ email, password });
-    console.log(res.status);
-    setIsFetchin(false);
+    // const res = await signin({ email, password });
+    await mutate({ email, password });
   };
 
   return (
@@ -84,7 +88,7 @@ export function LoginPage() {
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...register('password')}
       />
-      <Button disabled={isFetching} type="submit">
+      <Button disabled={isLoading} type="submit">
         Submit
       </Button>
     </form>
