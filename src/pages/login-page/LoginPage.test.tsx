@@ -13,10 +13,12 @@ import { handlers } from '../../mocks/handlers';
 
 const queryClient = new QueryClient();
 interface WrapperProps {
-  ui: JSX.Element;
+  children: React.ReactNode;
 }
-function ReactQueryWrapper({ ui }: WrapperProps) {
-  return <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>;
+function RenderReactQueryWrapper({ children }: WrapperProps) {
+  return render(
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
 }
 const server = setupServer(...handlers);
 beforeAll(() => {
@@ -38,7 +40,8 @@ const SubmitButton = () => screen.getByRole('button', { name: /submit/i });
 
 describe('when login page is mounted', () => {
   it('should be show login title', () => {
-    render(<ReactQueryWrapper ui={<LoginPage />} />);
+    RenderReactQueryWrapper({ children: <LoginPage /> });
+
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       /login page/i
     );
@@ -47,8 +50,7 @@ describe('when login page is mounted', () => {
 
 describe('when login page is mounted', () => {
   it('should be show email text field', () => {
-    render(<ReactQueryWrapper ui={<LoginPage />} />);
-
+    RenderReactQueryWrapper({ children: <LoginPage /> });
     const emailTextField = EmailTextField();
     const passwordTextField = PasswordTextField();
     const submitButton = SubmitButton();
@@ -60,7 +62,7 @@ describe('when login page is mounted', () => {
 });
 describe('when user click submit', () => {
   it('should show this field is required', async () => {
-    render(<ReactQueryWrapper ui={<LoginPage />} />);
+    RenderReactQueryWrapper({ children: <LoginPage /> });
     expect(screen.queryByText(/email is required/)).not.toBeInTheDocument();
     expect(screen.queryByText(/password is required/)).not.toBeInTheDocument();
 
@@ -72,7 +74,7 @@ describe('when user click submit', () => {
 
 describe('when user onblur email text field and it has an invalid email value', () => {
   it('should show this email is invalid', async () => {
-    render(<ReactQueryWrapper ui={<LoginPage />} />);
+    RenderReactQueryWrapper({ children: <LoginPage /> });
     expect(screen.queryByText(/email is invalid/)).not.toBeInTheDocument();
     const emailTextField = EmailTextField();
 
@@ -90,7 +92,7 @@ describe('when user onblur email text field and it has an invalid email value', 
 
 describe('when user submit button', () => {
   it('the submit button should be disable while fetching data', async () => {
-    render(<ReactQueryWrapper ui={<LoginPage />} />);
+    RenderReactQueryWrapper({ children: <LoginPage /> });
     expect(screen.queryByText(/email is invalid/)).not.toBeInTheDocument();
     const emailTextField = EmailTextField();
     const passwordTextField = PasswordTextField();

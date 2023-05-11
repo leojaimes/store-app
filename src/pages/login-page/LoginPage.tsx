@@ -37,27 +37,12 @@ export function LoginPage() {
 
   const { mutate, data, error, isLoading, isSuccess } =
     useSigninMutationQuery();
-  //   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //     const formElement = e?.currentTarget;
-  //     const formElements = formElement.elements as typeof formElement.elements & {
-  //       email: { value: string };
-  //       password: { value: string };
-  //     };
-  //     const { email, password } = formElements;
-  //     e.preventDefault();
-  //     if (!email.value) {
-  //       setEmailHelperText('email is required');
-  //     }
-  //     if (!password.value) {
-  //       setPasswordHelperText('password is required');
-  //     }
-  //   };
 
   const onSubmit: SubmitHandler<Inputs> = async (inputs) => {
     const { email, password } = inputs;
     console.log(data);
 
-    await delay(50);
+    await delay(1);
     // const res = await signin({ email, password });
     await mutate({ email, password });
   };
