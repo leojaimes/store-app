@@ -3,9 +3,11 @@ import userEvent from '@testing-library/user-event';
 
 import { setupServer } from 'msw/node';
 
+import { rest } from 'msw';
 import { LoginPage } from './LoginPage';
 import { handlers } from '../../mocks/handlers';
 import { RenderReactQueryWrapper } from '../../mocks/render-with-provider';
+import { server } from '../../mocks/server';
 
 const EmailTextField = () => screen.getByRole('textbox', { name: /email/i });
 const PasswordTextField = () =>
@@ -98,5 +100,31 @@ describe('when user submit button', () => {
     });
 
     expect(await circularProgress);
+  });
+});
+
+describe('when user submit button', () => {
+  it('it should display "Unexpected error, please try again when there is an error from api login" ', async () => {
+    RenderReactQueryWrapper({ children: <LoginPage /> });
+    server.use(
+      rest.post('/login', async (req, res, ctx) => {
+        return res(
+          ctx.status(500),
+          ctx.json({
+            message:
+              'Unexpected error, please try again when there is an error from api login',
+          })
+        );
+      })
+    );
+    const emailTextField = EmailTextField();
+    const passwordTextField = PasswordTextField();
+    const submitButton = SubmitButton();
+    await userEvent.type(emailTextField, 'valid@email.com');
+    await userEvent.type(passwordTextField, 'validpassword');
+    await userEvent.click(submitButton);
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      /Unexpected error, please try again when there is an error from api login/i
+    );
   });
 });

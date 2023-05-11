@@ -4,6 +4,7 @@ import {
   Typography,
   CircularProgress,
   Box,
+  Alert,
 } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -34,7 +35,7 @@ export function LoginPage() {
 
   // const [isFetching, setIsFetchin] = useState<boolean>(false);
 
-  const { mutate, data, error, isLoading, isSuccess } =
+  const { mutate, data, error, isLoading, isSuccess, isError } =
     useSigninMutationQuery();
 
   const onSubmit: SubmitHandler<Inputs> = async (inputs) => {
@@ -56,6 +57,11 @@ export function LoginPage() {
         <Box sx={{ display: 'flex' }}>
           <CircularProgress aria-label="loading" />
         </Box>
+      )}
+      {isError && (
+        <Alert severity="error" aria-label="loading">
+          {error.message}
+        </Alert>
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
