@@ -46,6 +46,15 @@ export const handlers = [
       const role = 'user';
       const name = 'user';
 
+      if (email === 'invalid@gmial.com' || password === 'invalid') {
+        return res(
+          ctx.status(401),
+          ctx.json({
+            message: 'The email or password are not correct',
+          })
+        );
+      }
+
       return res(
         ctx.status(200),
         ctx.json({

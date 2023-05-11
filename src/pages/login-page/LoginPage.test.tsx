@@ -29,12 +29,18 @@ const PasswordTextField = () =>
 
 const SubmitButton = () => screen.getByRole('button', { name: /submit/i });
 
-const fillAndSendLoginForm = async () => {
+const fillAndSendLoginForm = async ({
+  email = 'valid@email.com',
+  password = 'validpassword',
+}: {
+  email: string;
+  password: string;
+}) => {
   const emailTextField = EmailTextField();
   const passwordTextField = PasswordTextField();
   const submitButton = SubmitButton();
-  await userEvent.type(emailTextField, 'valid@email.com');
-  await userEvent.type(passwordTextField, 'validpassword');
+  await userEvent.type(emailTextField, email);
+  await userEvent.type(passwordTextField, password);
   await userEvent.click(submitButton);
 };
 
@@ -130,9 +136,26 @@ describe('when user submit button', () => {
   it('it should display "Unexpected error, please try again when there is an error from api login" ', async () => {
     RenderReactQueryWrapper({ children: <LoginPage /> });
     mockServerWithError();
-    await fillAndSendLoginForm();
+    await fillAndSendLoginForm({
+      email: 'validemail@gmial.com',
+      password: 'validpassword',
+    });
     expect(await screen.findByRole('alert')).toHaveTextContent(
       /Unexpected error, please try again when there is an error from api login/i
     );
+  });
+});
+
+describe('when user submit button', () => {
+  it('it should display "The email or password are not correct" when credentials are invalid', async () => {
+    RenderReactQueryWrapper({ children: <LoginPage /> });
+    // mockServerWithError();
+    await fillAndSendLoginForm({
+      email: 'invalid@gmial.com',
+      password: 'invalid',
+    });
+    expect(
+      await screen.findByText('The email or password are not correct')
+    ).toBeInTheDocument();
   });
 });
