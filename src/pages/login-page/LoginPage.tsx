@@ -50,9 +50,6 @@ export function LoginPage() {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Typography component="h1" variant="h5">
-        Login Page
-      </Typography>
       <Box
         sx={{
           marginTop: 8,
@@ -61,6 +58,9 @@ export function LoginPage() {
           alignItems: 'center',
         }}
       >
+        <Typography component="h1" variant="h5">
+          Login Page
+        </Typography>
         {isLoading && (
           <Box sx={{ display: 'flex' }}>
             <CircularProgress aria-label="loading" />
@@ -78,6 +78,7 @@ export function LoginPage() {
           className="loginForm"
         >
           <TextField
+            fullWidth
             id="email"
             label="email"
             error={Boolean(errors.email)}
@@ -86,14 +87,21 @@ export function LoginPage() {
             {...register('email', { onBlur: () => trigger('email') })}
           />
           <TextField
+            fullWidth
             id="password"
             label="password"
             error={Boolean(errors.password)}
             helperText={errors.password && errors.password?.message}
             // eslint-disable-next-line react/jsx-props-no-spreading
-            {...register('password')}
+            {...register('password', { onBlur: () => trigger('password') })}
           />
-          <Button disabled={isLoading} type="submit">
+          <Button
+            disabled={isLoading}
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
             Submit
           </Button>
         </form>
