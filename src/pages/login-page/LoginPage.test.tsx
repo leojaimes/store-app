@@ -7,18 +7,6 @@ import { LoginPage } from './LoginPage';
 import { handlers } from '../../mocks/handlers';
 import { RenderReactQueryWrapper } from '../../mocks/render-with-provider';
 
-const server = setupServer(...handlers);
-beforeAll(() => {
-  server.listen();
-});
-
-afterEach(() => {
-  server.resetHandlers();
-});
-afterAll(() => {
-  server.close();
-});
-
 const EmailTextField = () => screen.getByRole('textbox', { name: /email/i });
 const PasswordTextField = () =>
   screen.getByRole('textbox', { name: /password/i });

@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { render } from '@testing-library/react';
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 interface WrapperProps {
   children: React.ReactNode;
 }
