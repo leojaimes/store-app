@@ -2,16 +2,15 @@ import {
   Button,
   TextField,
   Typography,
-  touchRippleClasses,
+  CircularProgress,
+  Box,
 } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useState } from 'react';
-import axios from 'axios';
-import { useMutation } from '@tanstack/react-query';
+
 import { delay } from '../../util/delay';
-import { signin } from '../../api/request';
+
 import { useSigninMutationQuery } from '../../api/useSignin';
 
 const validationSchema = yup
@@ -48,34 +47,45 @@ export function LoginPage() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      id="loginForm"
-      name="loginForm"
-      className="loginForm"
-    >
-      <Typography component="h1" variant="h5">
-        Login Page
-      </Typography>
-      <TextField
-        id="email"
-        label="email"
-        error={Boolean(errors.email)}
-        helperText={errors.email && errors.email?.message}
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        {...register('email', { onBlur: () => trigger('email') })}
-      />
-      <TextField
-        id="password"
-        label="password"
-        error={Boolean(errors.password)}
-        helperText={errors.password && errors.password?.message}
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        {...register('password')}
-      />
-      <Button disabled={isLoading} type="submit">
-        Submit
-      </Button>
-    </form>
+    <>
+      {/* <Box sx={{ display: 'flex' }}>
+        <CircularProgress />
+      </Box> */}
+
+      {isLoading && (
+        <Box sx={{ display: 'flex' }}>
+          <CircularProgress aria-label="loading" />
+        </Box>
+      )}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        id="loginForm"
+        name="loginForm"
+        className="loginForm"
+      >
+        <Typography component="h1" variant="h5">
+          Login Page
+        </Typography>
+        <TextField
+          id="email"
+          label="email"
+          error={Boolean(errors.email)}
+          helperText={errors.email && errors.email?.message}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...register('email', { onBlur: () => trigger('email') })}
+        />
+        <TextField
+          id="password"
+          label="password"
+          error={Boolean(errors.password)}
+          helperText={errors.password && errors.password?.message}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...register('password')}
+        />
+        <Button disabled={isLoading} type="submit">
+          Submit
+        </Button>
+      </form>
+    </>
   );
 }

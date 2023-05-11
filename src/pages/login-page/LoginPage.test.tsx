@@ -2,24 +2,11 @@ import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { setupServer } from 'msw/node';
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from '@tanstack/react-query';
 
 import { LoginPage } from './LoginPage';
 import { handlers } from '../../mocks/handlers';
+import { RenderReactQueryWrapper } from '../../mocks/render-with-provider';
 
-const queryClient = new QueryClient();
-interface WrapperProps {
-  children: React.ReactNode;
-}
-function RenderReactQueryWrapper({ children }: WrapperProps) {
-  return render(
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-}
 const server = setupServer(...handlers);
 beforeAll(() => {
   server.listen();
@@ -102,5 +89,26 @@ describe('when user submit button', () => {
     await userEvent.click(submitButton);
     await waitFor(() => expect(submitButton).toBeDisabled());
     await waitFor(() => expect(submitButton).not.toBeDisabled());
+  });
+});
+
+describe('when user submit button', () => {
+  it('it should show a loading indicator while is fetching the login', async () => {
+    RenderReactQueryWrapper({ children: <LoginPage /> });
+    expect(
+      screen.queryByRole('progressbar', { name: /loading/i })
+    ).not.toBeInTheDocument();
+
+    const emailTextField = EmailTextField();
+    const passwordTextField = PasswordTextField();
+    const submitButton = SubmitButton();
+    await userEvent.type(emailTextField, 'valid@email.com');
+    await userEvent.type(passwordTextField, 'validpassword');
+    await userEvent.click(submitButton);
+    const circularProgress = screen.findByRole('progressbar', {
+      name: /loading/i,
+    });
+
+    expect(await circularProgress);
   });
 });
