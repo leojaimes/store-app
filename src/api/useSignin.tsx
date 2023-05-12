@@ -1,13 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 
-enum Environment {
-  prod = '',
-  dev = 'http://localhost:8080',
-  test = '',
-}
-
-const baseUrl = ''; // import.meta.env.test.VITE_REACT_BASE_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 interface SignInRequestBody {
   // Define la estructura de la solicitud de inicio de sesión

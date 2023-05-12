@@ -47,9 +47,7 @@ export function LoginPage() {
     // const res = await signin({ email, password });
     await mutate({ email, password });
   };
-  console.log(
-    `import.meta.env.VITE_BASE_URL ${JSON.stringify(import.meta.env.BASE_URL)}`
-  );
+
   return (
     <Container component="main" maxWidth="xs">
       <Box
