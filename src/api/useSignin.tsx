@@ -1,6 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 
+enum Environment {
+  prod = '',
+  dev = 'http://localhost:8080',
+  test = '',
+}
+
+const baseUrl = ''; // import.meta.env.test.VITE_REACT_BASE_URL;
+
 interface SignInRequestBody {
   // Define la estructura de la solicitud de inicio de sesión
   email: string;
@@ -26,8 +34,10 @@ export const useSigninMutationQuery = () => {
   >({
     mutationFn: async (body) => {
       // return axios.post('/login', body);
+      console.log(`baseUrl ${baseUrl}`);
+      console.log(import.meta.env.VITE_SOME_KEY);
       try {
-        const response = await axios.post('/login', body);
+        const response = await axios.post(`${baseUrl}/login`, body);
         return response.data;
       } catch (error) {
         if (error instanceof AxiosError) {
